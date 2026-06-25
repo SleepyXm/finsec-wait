@@ -166,7 +166,7 @@ export function AuthChartAnimation() {
     chartRef.current = chart;
     seriesRef.current = series;
 
-    const visibleInitialCandles = 62;
+    const visibleInitialCandles = 36;
     const startTime = normalizeTime(
       Math.floor(Date.now() / 1000) - visibleInitialCandles * 60,
     );
@@ -330,7 +330,7 @@ function createLoopTape(length: number, seed: number): TapeCandle[] {
   const bias = randomBetween(random, -0.08, 0.08);
 
   return Array.from({ length }, (_, index) => {
-    const wave = Math.sin((index / length) * Math.PI * 2) * 0.85;
+    const wave = Math.sin((index / length) * Math.PI * 2) * 0.25;
     const impulse = randomBetween(random, -1.55, 1.65);
     const closeDelta = wave + impulse + bias;
 

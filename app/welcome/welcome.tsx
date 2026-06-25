@@ -345,7 +345,7 @@ export default function WaitlistPage() {
             <h1>Track markets, assets, and operations in one place.</h1>
           </div>
           <div className="auth-visual-copy auth-visual-copy-bottom">
-            <h1>and turn your strategy to a trading bot.</h1>
+            <h1>Automate the chart out of your life.</h1>
           </div>
         </aside>
 
