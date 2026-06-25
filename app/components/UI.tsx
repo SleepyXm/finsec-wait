@@ -166,7 +166,7 @@ export function AuthChartAnimation() {
     chartRef.current = chart;
     seriesRef.current = series;
 
-    const visibleInitialCandles = 36;
+    const visibleInitialCandles = 34;
     const startTime = normalizeTime(
       Math.floor(Date.now() / 1000) - visibleInitialCandles * 60,
     );
