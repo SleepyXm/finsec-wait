@@ -342,7 +342,7 @@ export default function WaitlistPage() {
           <AuthChartAnimation />
           <div className="auth-visual-copy auth-visual-copy-top anim-fade-up">
             <p>Finsec</p>
-            <h1>Track markets, assets, and operations in one place.</h1>
+            <h1>Track instruments, define your strategy and</h1>
           </div>
           <div className="auth-visual-copy auth-visual-copy-bottom">
             <h1>Automate the chart out of your life.</h1>
