@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -33,6 +34,13 @@ func IPRateLimiter(store limiter.Store) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ip := realIP(r)
+
+			// Skip rate limiting for local development
+			if (ip == "127.0.0.1" || ip == "::1") && os.Getenv("ENV") != "production" {
+				next.ServeHTTP(w, r)
+				return
+			}
+
 			ctx, err := lmt.Get(r.Context(), ip)
 			if err != nil {
 				http.Error(w, "internal error", http.StatusInternalServerError)
@@ -46,7 +54,7 @@ func IPRateLimiter(store limiter.Store) func(http.Handler) http.Handler {
 
 			if ctx.Reached {
 				w.Header().Set("Retry-After", strconv.FormatInt(ctx.Reset-time.Now().Unix(), 10))
-				http.Error(w, "too many requests", http.StatusTooManyRequests)
+				http.Error(w, "Slow down!", http.StatusTooManyRequests)
 				return
 			}
 
@@ -96,5 +104,8 @@ func WrapGin(m func(http.Handler) http.Handler) gin.HandlerFunc {
 			c.Request = r
 			c.Next()
 		})).ServeHTTP(c.Writer, c.Request)
+		if c.Writer.Written() {
+			c.Abort() // 👈 tells Gin not to call the next handler
+		}
 	}
 }

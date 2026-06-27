@@ -207,12 +207,14 @@ function WaitlistForm({
 }) {
   const [email, setEmail] = useState("");
   const [emailErr, setEmailErr] = useState(false);
+  const [error, setError] = useState<string | null>(null); // 👈
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false); // 👈 optional but useful
 
-  const fieldStyle = (error = false) => ({
+  const fieldStyle = (hasError = false) => ({
     background: t.bg2,
     color: t.text,
-    border: `0.5px solid ${error ? t.errorText : t.border}`,
+    border: `0.5px solid ${hasError ? t.errorText : t.border}`,
     borderRadius: 8,
     padding: "10px 14px",
     fontSize: 14,
@@ -229,14 +231,20 @@ function WaitlistForm({
       return;
     }
     setLoading(true);
+    setError(null);
     try {
       await onSubmit({ email });
+      setSuccess(true);
     } catch (err) {
-      console.error("Waitlist error:", err);
+      setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setLoading(false);
     }
   };
+
+  if (success) {
+    return <p style={{ color: t.text, textAlign: "center" }}>You're on the list! Check your email.</p>;
+  }
 
   return (
     <div>
@@ -249,21 +257,18 @@ function WaitlistForm({
           onChange={(e) => {
             setEmail(e.target.value);
             setEmailErr(false);
+            setError(null); // 👈 clear on change
           }}
           style={fieldStyle(emailErr)}
         />
         {emailErr && (
-          <div
-            style={{
-              fontSize: 12,
-              color: t.errorText,
-              background: t.errorBg,
-              padding: "6px 10px",
-              borderRadius: 8,
-              marginTop: 6,
-            }}
-          >
+          <div style={{ fontSize: 12, color: t.errorText, background: t.errorBg, padding: "6px 10px", borderRadius: 8, marginTop: 6 }}>
             Please enter a valid email address.
+          </div>
+        )}
+        {error && ( // 👈
+          <div style={{ fontSize: 12, color: t.errorText, background: t.errorBg, padding: "6px 10px", borderRadius: 8, marginTop: 6 }}>
+            {error}
           </div>
         )}
       </div>
@@ -287,19 +292,9 @@ function WaitlistForm({
       >
         {loading ? "Joining…" : "Join the waitlist"}
       </button>
-      <p
-        style={{
-          fontSize: 11,
-          color: t.hint,
-          textAlign: "center",
-          margin: "8px 0 0",
-        }}
-      >
+      <p style={{ fontSize: 11, color: t.hint, textAlign: "center", margin: "8px 0 0" }}>
         No spam. Unsubscribe anytime.{" "}
-        <a href="/privacy" style={{ color: t.hint, textDecoration: "underline" }}>
-          Privacy policy
-        </a>
-        .
+        <a href="/privacy" style={{ color: t.hint, textDecoration: "underline" }}>Privacy policy</a>.
       </p>
     </div>
   );
