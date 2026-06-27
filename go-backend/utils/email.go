@@ -1,9 +1,12 @@
 package utils
 
 import (
-	"fmt"
+	"bytes"
+	_ "embed"
+	"html/template"
+	"net/url"
 
-	"github.com/resend/resend-go/v2"
+	"github.com/resend/resend-go/v3"
 )
 
 var resendClient *resend.Client
@@ -12,21 +15,33 @@ func InitResend() {
 	resendClient = resend.NewClient(Cfg.ResendAPIKey)
 }
 
-func SendVerificationEmail(email, token string) error {
-	verificationURL := fmt.Sprintf("%s/auth/verify?token=%s", Cfg.DevServerBackend, token)
+//go:embed emails/waitlist.html
+var waitlistHTML string
+
+func SendWaitlistEmail(email, token string) error {
+	confirmURL := "https://devolib.com/waitlist/confirm?token=" + url.QueryEscape(token)
+
+	tmpl, err := template.New("waitlist").Parse(waitlistHTML)
+	if err != nil {
+		return err
+	}
+
+	var body bytes.Buffer
+
+	err = tmpl.Execute(&body, map[string]string{
+		"ConfirmURL": confirmURL,
+	})
+	if err != nil {
+		return err
+	}
 
 	params := &resend.SendEmailRequest{
 		From:    "team@devolib.com",
 		To:      []string{email},
-		Subject: "Verify your email",
-		Html: fmt.Sprintf(`
-            <h2>Welcome!</h2>
-            <p>Click the link below to verify your email:</p>
-            <a href="%s">Verify Email</a>
-            <p>This link expires in 24 hours.</p>
-        `, verificationURL),
+		Subject: "Thanks for joining us!",
+		Html:    body.String(),
 	}
 
-	_, err := resendClient.Emails.Send(params)
+	_, err = resendClient.Emails.Send(params)
 	return err
 }

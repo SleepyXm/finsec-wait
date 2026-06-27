@@ -39,6 +39,7 @@ require (
 	github.com/quic-go/quic-go v0.59.0 // indirect
 	github.com/redis/go-redis/v9 v9.19.0 // indirect
 	github.com/resend/resend-go/v2 v2.28.0 // indirect
+	github.com/resend/resend-go/v3 v3.9.2 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.3.1 // indirect
 	github.com/ulule/limiter v2.2.2+incompatible // indirect
