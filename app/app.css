@@ -466,19 +466,41 @@ body {
 
 @media (max-width: 900px) {
   .auth-layout {
+    position: relative;
+    min-height: 100svh;
+    display: block;
     grid-template-columns: 1fr;
+    overflow: hidden;
+
+    background:
+      linear-gradient(
+        to bottom,
+        rgba(58, 66, 85, 0.98),
+        rgba(58, 66, 85, 0.12)
+      ),
+      url("https://images.unsplash.com/photo-1709706696753-1dc4f13d0cc4?w=1080&q=80");
+
+    background-size: cover;
+    background-position: center;
   }
 
   .auth-visual {
-    display: none;
+    display: none !important;
   }
 
   .auth-panel {
-    padding: 32px 24px;
+    position: relative;
+    z-index: 2;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 72px 24px 48px;
+    background: transparent;
   }
 
-  .auth-visual-content {
-    left: 24px;
-    top: 24px;
+  .auth-panel-inner {
+    width: 100%;
+    max-width: 420px;
   }
 }
