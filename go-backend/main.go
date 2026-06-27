@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"finsec-backend/middleware"
 	"finsec-backend/routes"
 	"finsec-backend/utils"
 
@@ -47,7 +48,6 @@ func initDB() {
 }
 
 func main() {
-
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found", err)
 	}
@@ -55,6 +55,9 @@ func main() {
 	utils.Load()
 	utils.InitResend()
 	initDB()
+	initRedis()
+
+	store := middleware.NewRedisStore(rdb) // 👈 replaces the libredis block
 
 	allowedOrigins := []string{}
 	if dev := os.Getenv("DEV_SERVER"); dev != "" {
@@ -80,8 +83,11 @@ func main() {
 		AllowCredentials: true,
 		AllowWildcard:    true,
 	}))
+	router.Use(middleware.WrapGin(middleware.GlobalRateLimiter(store))) // router using middleware for ratelimit
 
 	api := router.Group("/api")
+	api.Use(middleware.WrapGin(middleware.IPRateLimiter(store))) // router using middleware to rate limit IPs
+
 	routes.RegisterAuthRoutes(api.Group(""), db)
 
 	router.Run(":9000")

@@ -5,3 +5,13 @@
 # React Router
 /.react-router/
 /build/
+
+**/*.pyc
+*.pyc
+*.pyc
+
+*/tmp
+go-backend/alembic.ini
+go-backend/alembic.ini
+go-backend/tmp/main.exe
+/go-backend/tmp
