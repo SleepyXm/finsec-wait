@@ -59,7 +59,7 @@ export default function WaitlistPage() {
           </div>
 
           <div className="auth-visual-copy auth-visual-copy-bottom">
-            <h1>And we'll automate the chart out of your life</h1>
+            <h1>And automate the chart out of your life</h1>
           </div>
         </aside>
 
