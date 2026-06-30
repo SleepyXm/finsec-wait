@@ -76,22 +76,30 @@ export const CandleStickChart: React.FC<{
     theme
   );
 
-  useEffect(() => {
+  const hasSetInitialRange = useRef(false);
+
+useEffect(() => {
   if (!seriesRef.current || !chartRef.current || data.length < 2) return;
 
   const interval = data[1].time - data[0].time;
   const barSpacing = chartRef.current.timeScale().options().barSpacing;
   const containerWidth = containerRef.current?.clientWidth ?? 0;
   const lastCandle = data[data.length - 1];
-  
+
   const visibleBars = Math.ceil(containerWidth / barSpacing);
-  
+
   const whitespace = [];
   for (let i = 1; i <= visibleBars; i++) {
     whitespace.push({ time: lastCandle.time + interval * i });
   }
 
   seriesRef.current.setData([...data, ...whitespace]);
+
+  // Pin the view so the first candle sits at the left edge
+  chartRef.current.timeScale().setVisibleLogicalRange({
+    from: -0.5,
+    to: visibleBars - 0.5,
+  });
 }, [data]);
 
 

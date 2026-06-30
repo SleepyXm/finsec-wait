@@ -55,11 +55,11 @@ export default function WaitlistPage() {
 
           <div className="auth-visual-copy auth-visual-copy-top anim-fade-up font-display">
             <p>Finsec</p>
-            <h1>Track your instruments, define your strategy and</h1>
+            <h1>Define your strategy, entries, exits</h1>
           </div>
 
           <div className="auth-visual-copy auth-visual-copy-bottom">
-            <h1>Automate the chart out of your life.</h1>
+            <h1>And we'll automate the chart out of your life</h1>
           </div>
         </aside>
 
@@ -110,7 +110,7 @@ export default function WaitlistPage() {
               }}
             >
               Most retail traders have a strategy. The problem is turning it
-              into something that runs automatically — without hiring a developer
+              into something that runs automatically, without hiring a developer
               or learning to code.
             </p>
 
