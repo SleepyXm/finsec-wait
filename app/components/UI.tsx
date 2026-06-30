@@ -111,6 +111,20 @@ export const sectionStyle: React.CSSProperties = {
   borderTop: "1px solid rgba(238,242,247,0.07)",
 };
 
+export const handleGridGlowMove = (e: React.MouseEvent<HTMLElement>) => {
+  const rect = e.currentTarget.getBoundingClientRect();
+
+  e.currentTarget.style.setProperty(
+    "--grid-x",
+    `${e.clientX - rect.left}px`
+  );
+
+  e.currentTarget.style.setProperty(
+    "--grid-y",
+    `${e.clientY - rect.top}px`
+  );
+};
+
 export const gridBgStyle: React.CSSProperties = {
   position: "absolute",
   inset: 0,

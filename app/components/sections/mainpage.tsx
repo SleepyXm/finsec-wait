@@ -28,7 +28,8 @@ const BEFORE_STEPS = [
   },
   {
     label: "Rewrite rules by hand",
-    detail: "Move between notes, indicators, alerts, scripts, and broker windows.",
+    detail:
+      "Move between notes, indicators, alerts, scripts, and broker windows.",
   },
   {
     label: "Execute under pressure",
@@ -47,7 +48,8 @@ const AFTER_STEPS = [
   },
   {
     label: "Automate execution",
-    detail: "The system watches, triggers, logs, and follows the rules exactly.",
+    detail:
+      "The system watches, triggers, logs, and follows the rules exactly.",
   },
 ];
 
@@ -63,7 +65,7 @@ function useReveal() {
           observer.disconnect();
         }
       },
-      { threshold: 0.12 }
+      { threshold: 0.12 },
     );
 
     if (sectionRef.current) observer.observe(sectionRef.current);
@@ -87,22 +89,19 @@ export function HowItWorks() {
     {
       no: "01",
       title: "Write your strategy",
-      copy:
-        "Describe your entry and exit conditions in plain English — or import rules from TradingView's Pine Script. No coding required.",
+      copy: "Describe your entry and exit conditions in plain English — or import rules from TradingView's Pine Script. No coding required.",
       mock: <MockStrategyInput />,
     },
     {
       no: "02",
       title: "FINSEC translates it",
-      copy:
-        "Your rules get parsed into a structured logic block — visible, editable, and testable against historical data before you go live.",
+      copy: "Your rules get parsed into a structured logic block — visible, editable, and testable against historical data before you go live.",
       mock: <MockRuleCard />,
     },
     {
       no: "03",
       title: "It runs. You watch.",
-      copy:
-        "Once deployed, FINSEC monitors your instruments and executes trades automatically — logging every action in real time.",
+      copy: "Once deployed, FINSEC monitors your instruments and executes trades automatically — logging every action in real time.",
       mock: <MockTradeLog />,
     },
   ];
@@ -110,9 +109,25 @@ export function HowItWorks() {
   return (
     <section
       ref={sectionRef}
+      className="grid-glow-section"
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        e.currentTarget.style.setProperty(
+          "--grid-x",
+          `${e.clientX - rect.left}px`,
+        );
+        e.currentTarget.style.setProperty(
+          "--grid-y",
+          `${e.clientY - rect.top}px`,
+        );
+      }}
       style={{
         ...sectionStyle,
         minHeight: "100vh",
+        width: "100%",
+        maxWidth: "100vw",
+        boxSizing: "border-box",
+        overflow: "hidden",
         display: "flex",
         alignItems: "center",
         padding: "6rem 2rem",
@@ -120,7 +135,7 @@ export function HowItWorks() {
           "linear-gradient(180deg, rgba(19,24,33,0.92), rgba(14,17,23,0.98))",
       }}
     >
-      <div style={gridBgStyle} />
+      <div className="grid-bg-glow" style={gridBgStyle} />
       <div style={liquidOrbStyle("-12%", "8%", 360, 0.1)} />
 
       <div
@@ -309,8 +324,17 @@ export function HowItWorks() {
                   ...reveal(660 + i * 80),
                 }}
               >
-                <StepText muted no={i + 1} label={before.label} detail={before.detail} />
-                <StepText no={i + 1} label={after.label} detail={after.detail} />
+                <StepText
+                  muted
+                  no={i + 1}
+                  label={before.label}
+                  detail={before.detail}
+                />
+                <StepText
+                  no={i + 1}
+                  label={after.label}
+                  detail={after.detail}
+                />
               </div>
             );
           })}
@@ -384,7 +408,10 @@ function ReplayEmbed({ t }: { t: typeof theme.dark }) {
   useEffect(() => {
     fetch("/demo-data/NQ=F-5m.json")
       .then((res) => res.json())
-      .then((data: BacktestCandle[]) => setCandles(data));
+      .then((data: BacktestCandle[]) => {
+        setCandles(data);
+        setCursor(Math.min(60, data.length));
+      });
   }, []);
 
   const visibleCandles = candles.slice(0, cursor);
@@ -402,11 +429,25 @@ function ReplayEmbed({ t }: { t: typeof theme.dark }) {
 
   return (
     <div style={{ ...panelStyle(t), padding: "1rem" }}>
-      <div style={{ position: "relative", width: "100%", height: 250, overflow: "hidden" }}>
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          aspectRatio: "16 / 9",
+          maxHeight: 320,
+          overflow: "hidden",
+        }}
+      >
         {visibleCandles.length > 0 ? (
-          <CandleStickChart data={visibleCandles} renderTradeUI={null} trades={[]} />
+          <CandleStickChart
+            data={visibleCandles}
+            renderTradeUI={null}
+            trades={[]}
+          />
         ) : (
-          <p style={{ fontSize: 13, color: "rgba(238,242,247,0.5)" }}>Loading…</p>
+          <p style={{ fontSize: 13, color: "rgba(238,242,247,0.5)" }}>
+            Loading…
+          </p>
         )}
       </div>
 
@@ -461,9 +502,25 @@ export function BacktestBarreplay() {
   return (
     <section
       ref={sectionRef}
+      className="grid-glow-section"
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        e.currentTarget.style.setProperty(
+          "--grid-x",
+          `${e.clientX - rect.left}px`,
+        );
+        e.currentTarget.style.setProperty(
+          "--grid-y",
+          `${e.clientY - rect.top}px`,
+        );
+      }}
       style={{
         ...sectionStyle,
         minHeight: "100vh",
+        width: "100%",
+        maxWidth: "100vw",
+        boxSizing: "border-box",
+        overflow: "hidden",
         display: "flex",
         alignItems: "center",
         padding: "6rem 2rem",
@@ -471,7 +528,7 @@ export function BacktestBarreplay() {
           "linear-gradient(180deg, rgba(14,17,23,0.98), rgba(19,24,33,0.94))",
       }}
     >
-      <div style={gridBgStyle} />
+      <div className="grid-bg-glow" style={gridBgStyle} />
       <div style={liquidOrbStyle("4%", "70%", 430, 0.08)} />
 
       <div
@@ -556,10 +613,14 @@ export function BacktestBarreplay() {
             </div>
 
             <div
+              className="included-grid"
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
                 gap: "0.75rem",
+                width: "100%",
+                minWidth: 0,
+                marginBottom: "3rem",
               }}
             >
               {included.map((item) => (
@@ -571,6 +632,7 @@ export function BacktestBarreplay() {
                     gap: "0.6rem",
                     alignItems: "center",
                     padding: "0.8rem 0.9rem",
+                    minWidth: 0,
                   }}
                 >
                   <span
@@ -588,6 +650,8 @@ export function BacktestBarreplay() {
                       fontSize: 13,
                       color: "rgba(238,242,247,0.72)",
                       lineHeight: 1.4,
+                      minWidth: 0,
+                      overflowWrap: "break-word",
                     }}
                   >
                     {item}
@@ -602,6 +666,7 @@ export function BacktestBarreplay() {
               display: "flex",
               flexDirection: "column",
               gap: "1rem",
+              minWidth: 0,
               ...reveal(300),
             }}
           >
@@ -660,126 +725,6 @@ export function BacktestBarreplay() {
         </div>
       </div>
     </section>
-  );
-}
-
-function ReplayMock() {
-  const t = theme.dark;
-
-  return (
-    <div style={{ ...panelStyle(t), padding: "1.25rem" }}>
-      <div style={cornerStyle()} />
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 16,
-        }}
-      >
-        <span
-          style={{
-            fontSize: 10,
-            color: t.muted2,
-            letterSpacing: 1.2,
-            textTransform: "uppercase",
-            fontFamily: "var(--font-code), monospace",
-          }}
-        >
-          Bar replay
-        </span>
-
-        <div style={{ display: "flex", gap: 5 }}>
-          {["⏮", "⏸", "⏭"].map((c) => (
-            <button
-              key={c}
-              style={{
-                background: "transparent",
-                border: `1px solid ${t.borderSoft}`,
-                color: "rgba(238,242,247,0.62)",
-                padding: "4px 9px",
-                cursor: "pointer",
-                fontSize: 11,
-              }}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div
-        style={{
-          position: "relative",
-          height: 104,
-          display: "flex",
-          gap: 4,
-          alignItems: "flex-end",
-          marginBottom: 14,
-          paddingTop: 10,
-          overflow: "hidden",
-        }}
-      >
-        {[
-          40, 55, 35, 65, 50, 70, 45, 60, 75, 55, 80, 65, 70, 85, 60, 76, 58,
-          72, 88, 62,
-        ].map((h, i) => (
-          <div
-            key={i}
-            style={{
-              flex: 1,
-              height: `${h}%`,
-              background: i % 4 === 0 ? DANGER : SUCCESS,
-              opacity: i < 13 ? 0.86 : 0.16,
-            }}
-          />
-        ))}
-
-        <div
-          style={{
-            position: "absolute",
-            left: "64%",
-            top: 0,
-            bottom: 0,
-            width: 1,
-            background: ACCENT,
-            opacity: 0.85,
-          }}
-        />
-      </div>
-
-      <div
-        style={{
-          height: 5,
-          background: "rgba(238,242,247,0.06)",
-          overflow: "hidden",
-          marginBottom: 10,
-        }}
-      >
-        <div
-          style={{
-            width: "64%",
-            height: "100%",
-            background: ACCENT,
-          }}
-        />
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          gap: "1rem",
-          fontSize: 11,
-          color: t.muted2,
-          fontFamily: "var(--font-code), monospace",
-        }}
-      >
-        <span>AAPL · 1D · Jan 2023</span>
-        <span style={{ color: ACCENT }}>Oct 2023</span>
-      </div>
-    </div>
   );
 }
 
@@ -887,7 +832,9 @@ function BacktestMock() {
           >
             <span style={{ color: t.muted2 }}>{row.time}</span>
             <span style={{ color: t.muted }}>{row.action}</span>
-            <span style={{ color: row.result.includes("+") ? SUCCESS : ACCENT }}>
+            <span
+              style={{ color: row.result.includes("+") ? SUCCESS : ACCENT }}
+            >
               {row.result}
             </span>
           </div>

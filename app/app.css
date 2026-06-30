@@ -583,11 +583,21 @@ select {
 /* Layout helpers                */
 /* ----------------------------- */
 
-.split-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: 4rem;
-  align-items: center;
+.split-grid,
+.feature-grid {
+  width: 100%;
+  min-width: 0;
+}
+
+.split-grid > *,
+.feature-grid > * {
+  min-width: 0;
+}
+
+.split-grid canvas,
+.split-grid svg,
+.split-grid img {
+  max-width: 100%;
 }
 
 .comparison-head,
@@ -606,6 +616,55 @@ select {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
+}
+
+
+/*
+Grid content
+*/
+
+.grid-glow-section {
+  --grid-x: 50%;
+  --grid-y: 50%;
+  position: relative;
+}
+
+.grid-bg-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.grid-bg-glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(rgba(159, 190, 246, 0.72) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(159, 190, 246, 0.72) 1px, transparent 1px);
+
+  background-size: 72px 72px;
+
+  mask-image: radial-gradient(
+    circle 320px at var(--grid-x) var(--grid-y),
+    black 0%,
+    transparent 70%
+  );
+
+  -webkit-mask-image: radial-gradient(
+    circle 320px at var(--grid-x) var(--grid-y),
+    black 0%,
+    transparent 70%
+  );
+
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.grid-glow-section:hover .grid-bg-glow::after {
+  opacity: 1;
 }
 
 /* ----------------------------- */
@@ -691,7 +750,7 @@ select {
 
   .split-grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 3rem;
   }
 
   .comparison-head,
@@ -703,5 +762,14 @@ select {
   .stat-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .split-grid {
+    gap: 3rem;
+  }
+  .included-grid {
+    grid-template-columns: 1fr !important;
   }
 }
