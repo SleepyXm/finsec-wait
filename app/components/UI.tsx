@@ -1,63 +1,242 @@
-import { useState, useRef, useEffect, useMemo } from "react";
-import {
-  CandlestickSeries,
-  createChart,
-  type IChartApi,
-  type ISeriesApi,
-  type UTCTimestamp,
-} from "lightweight-charts";
+import "../animations.css";
+import type React from "react";
 
 export const REFERRALS = [
-  { value: "search",   label: "Search engine" },
-  { value: "reddit",   label: "Reddit" },
+  { value: "search", label: "Search engine" },
+  { value: "reddit", label: "Reddit" },
   { value: "linkedin", label: "LinkedIn" },
 ];
 
 export const FEATURES = [
   "Real-time data",
-  "Advanced orders",
-  "Portfolio analytics",
-  "Risk management",
+  "Strategy automation",
+  "Bar replay",
+  "Backtesting",
+  "Risk controls",
+  "Execution logs",
 ];
+
+export const ACCENT = "#8FAADC";
+export const ACCENT_SOFT = "rgba(143,170,220,0.12)";
+export const WHITE = "#EEF2F7";
+
+export const ACCENT_2 = "#5F7FB8";
+export const DANGER = "#C77D7D";
+export const SUCCESS = "#8DBFA3";
 
 export const theme = {
   light: {
-    bg:       "#ffffff",
-    bg2:      "#f7f6f3",
-    border:   "rgba(0,0,0,0.1)",
-    text:     "#1a1a1a",
-    muted:    "#6b6b6b",
-    hint:     "#d8d8d8",
-    btn:      "#1a1a1a",
-    btnText:  "#f7f6f3",
-    pill:     "#f1efe8",
-    pillText: "#5f5e5a",
-    success:  "#eaf3de",
-    successText: "#3b6d11",
-    errorBg:  "#fcebeb",
-    errorText: "#a32d2d",
+    bg: "#F3F4F6",
+    bg2: "#E7EAF0",
+    bg3: "#DDE2EA",
+
+    surface: "#FFFFFF",
+    surface2: "#F4F6F9",
+    surface3: "#E9EDF3",
+
+    border: "rgba(15,23,42,0.12)",
+    borderSoft: "rgba(15,23,42,0.07)",
+    borderStrong: "rgba(15,23,42,0.22)",
+
+    text: "#10141C",
+    muted: "rgba(16,20,28,0.58)",
+    muted2: "rgba(16,20,28,0.38)",
+    hint: "rgba(16,20,28,0.18)",
+
+    accent: ACCENT,
+    accentSoft: "rgba(143,170,220,0.16)",
+    accentBorder: "rgba(95,127,184,0.28)",
+
+    btn: "#10141C",
+    btnText: "#F3F4F6",
+
+    pill: "rgba(15,23,42,0.045)",
+    pillText: "#10141C",
+
+    success: "rgba(141,191,163,0.16)",
+    successText: "#35694B",
+
+    errorBg: "rgba(199,125,125,0.12)",
+    errorText: "#9F3F3F",
   },
+
   dark: {
-    bg:       "#111111",
-    bg2:      "#1d1d1d",
-    border:   "rgba(255,255,255,0.1)",
-    text:     "#efefed",
-    muted:    "#999999",
-    hint:     "#d8d8d8",
-    btn:      "#efefed",
-    btnText:  "#111111",
-    pill:     "#2c2c2a",
-    pillText: "#b4b2a9",
-    success:  "#173404",
-    successText: "#c0dd97",
-    errorBg:  "#501313",
-    errorText: "#f09595",
+    bg: "#0E1117",
+    bg2: "#131821",
+    bg3: "#1A202B",
+
+    surface: "#131821",
+    surface2: "#181F2A",
+    surface3: "#202838",
+
+    border: "rgba(238,242,247,0.12)",
+    borderSoft: "rgba(238,242,247,0.07)",
+    borderStrong: "rgba(238,242,247,0.22)",
+
+    text: "#EEF2F7",
+    muted: "rgba(238,242,247,0.66)",
+    muted2: "rgba(238,242,247,0.42)",
+    hint: "rgba(238,242,247,0.22)",
+
+    accent: ACCENT,
+    accentSoft: ACCENT_SOFT,
+    accentBorder: "rgba(143,170,220,0.34)",
+
+    btn: ACCENT,
+    btnText: "#0E1117",
+
+    pill: "rgba(238,242,247,0.045)",
+    pillText: "#EEF2F7",
+
+    success: "rgba(141,191,163,0.12)",
+    successText: "#B8DCC5",
+
+    errorBg: "rgba(199,125,125,0.12)",
+    errorText: "#E2A1A1",
   },
 };
 
+export const pageStyle: React.CSSProperties = {
+  background:
+    "radial-gradient(circle at 15% 10%, rgba(143,170,220,0.10), transparent 28%), linear-gradient(180deg, #0E1117 0%, #131821 45%, #0E1117 100%)",
+  color: theme.dark.text,
+  minHeight: "100vh",
+  fontFamily: "var(--font-display), system-ui, sans-serif",
+  overflowX: "hidden",
+};
+
+export const sectionStyle: React.CSSProperties = {
+  position: "relative",
+  overflow: "hidden",
+  borderTop: "1px solid rgba(238,242,247,0.07)",
+};
+
+export const gridBgStyle: React.CSSProperties = {
+  position: "absolute",
+  inset: 0,
+  backgroundImage:
+    "linear-gradient(rgba(238,242,247,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(238,242,247,0.045) 1px, transparent 1px)",
+  backgroundSize: "72px 72px",
+  maskImage: "linear-gradient(to bottom, black, transparent 85%)",
+  WebkitMaskImage: "linear-gradient(to bottom, black, transparent 85%)",
+  opacity: 0.38,
+  pointerEvents: "none",
+};
+
+export const liquidPageStyle = pageStyle;
+export const liquidSectionStyle = sectionStyle;
+
+export const liquidOrbStyle = (
+  top: string,
+  left: string,
+  size: number,
+  opacity = 0.08
+): React.CSSProperties => ({
+  position: "absolute",
+  top,
+  left,
+  width: size,
+  height: size,
+  borderRadius: "999px",
+  background: "radial-gradient(circle, rgba(143,170,220,0.18), transparent 64%)",
+  filter: "blur(60px)",
+  opacity,
+  pointerEvents: "none",
+});
+
+export const cardStyle = (t = theme.dark): React.CSSProperties => ({
+  position: "relative",
+  background: t.surface,
+  border: `1px solid ${t.borderSoft}`,
+  borderRadius: 0,
+});
+
+export const panelStyle = (t = theme.dark): React.CSSProperties => ({
+  position: "relative",
+  background:
+    "linear-gradient(180deg, rgba(238,242,247,0.035), rgba(238,242,247,0.015))",
+  border: `1px solid ${t.borderSoft}`,
+  borderRadius: 0,
+});
+
+export const glassCardStyle = panelStyle;
+
+export const glowCardStyle = (t = theme.dark): React.CSSProperties => ({
+  ...panelStyle(t),
+  boxShadow: "none",
+});
+
+export const cornerStyle = (): React.CSSProperties => ({
+  position: "absolute",
+  inset: -1,
+  pointerEvents: "none",
+  background:
+    "linear-gradient(to right, rgba(238,242,247,0.36) 1px, transparent 1px) 0 0 / 14px 14px no-repeat, linear-gradient(to bottom, rgba(238,242,247,0.36) 1px, transparent 1px) 0 0 / 14px 14px no-repeat, linear-gradient(to left, rgba(238,242,247,0.36) 1px, transparent 1px) 100% 0 / 14px 14px no-repeat, linear-gradient(to bottom, rgba(238,242,247,0.36) 1px, transparent 1px) 100% 0 / 14px 14px no-repeat, linear-gradient(to right, rgba(238,242,247,0.36) 1px, transparent 1px) 0 100% / 14px 14px no-repeat, linear-gradient(to top, rgba(238,242,247,0.36) 1px, transparent 1px) 0 100% / 14px 14px no-repeat, linear-gradient(to left, rgba(238,242,247,0.36) 1px, transparent 1px) 100% 100% / 14px 14px no-repeat, linear-gradient(to top, rgba(238,242,247,0.36) 1px, transparent 1px) 100% 100% / 14px 14px no-repeat",
+});
+
+export const buttonStyle = (t = theme.dark): React.CSSProperties => ({
+  background: t.accent,
+  color: t.btnText,
+  border: "none",
+  borderRadius: 0,
+  padding: "0.85rem 1.25rem",
+  fontSize: 13,
+  fontWeight: 600,
+  letterSpacing: 0.4,
+  textTransform: "uppercase",
+  cursor: "pointer",
+  transition: "transform 0.18s ease, opacity 0.18s ease",
+});
+
+export const ghostButtonStyle = (t = theme.dark): React.CSSProperties => ({
+  background: "transparent",
+  color: t.text,
+  border: `1px solid ${t.border}`,
+  borderRadius: 0,
+  padding: "0.85rem 1.25rem",
+  fontSize: 13,
+  fontWeight: 500,
+  letterSpacing: 0.4,
+  textTransform: "uppercase",
+  cursor: "pointer",
+  transition: "transform 0.18s ease, border-color 0.18s ease",
+});
+
+export function MonoLabel({
+  children,
+  t = theme.dark,
+}: {
+  children: React.ReactNode;
+  t?: any;
+}) {
+  return (
+    <div
+      style={{
+        fontFamily: "var(--font-code), monospace",
+        fontSize: 11,
+        letterSpacing: 1.1,
+        color: t.accent,
+        textTransform: "uppercase",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 export function Label({ children, t }: { children: React.ReactNode; t: any }) {
   return (
-    <label style={{ fontSize: 12, color: t.muted, display: "block", marginBottom: 5 }}>
+    <label
+      style={{
+        fontFamily: "var(--font-code), monospace",
+        fontSize: 11,
+        color: t.muted2,
+        display: "block",
+        marginBottom: 6,
+        letterSpacing: 0.4,
+        textTransform: "uppercase",
+      }}
+    >
       {children}
     </label>
   );
@@ -69,403 +248,94 @@ export function Pill({ children, t }: { children: React.ReactNode; t: any }) {
       style={{
         background: t.pill,
         color: t.pillText,
-        borderRadius: 20,
-        padding: "5px 10px",
+        border: `1px solid ${t.borderSoft}`,
+        padding: "0.45rem 0.7rem",
         fontSize: 11,
         display: "inline-flex",
         alignItems: "center",
-        gap: 4,
+        gap: 6,
+        fontFamily: "var(--font-code), monospace",
+        letterSpacing: 0.2,
       }}
     >
-      ✓ {children}
+      <span style={{ color: t.accent }}>▸</span>
+      {children}
     </span>
   );
 }
 
-type Candle = {
-  time: UTCTimestamp;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-};
-
-type TapeCandle = {
-  closeDelta: number;
-  highExtra: number;
-  lowExtra: number;
-  ticks: number[];
-};
-
-type SnapshotSignal = {
-  mode: "entry" | "exit";
-  direction: "long" | "short";
-  entry: {
-    x: number;
-    y: number;
-  };
-  exit: {
-    x: number;
-    y: number;
-  };
-};
-
-export function AuthChartAnimation() {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const chartRef = useRef<IChartApi | null>(null);
-  const seriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
-
-  const [snapshotActive, setSnapshotActive] = useState(false);
-  const [signal, setSignal] = useState<SnapshotSignal>(() =>
-    createSnapshotSignal(),
-  );
-
-  // Random once per mount, then loop that same path.
-  const tape = useMemo(() => createLoopTape(30, Date.now()), []);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const container = containerRef.current;
-
-    const chart = createChart(container, {
-      autoSize: true,
-      layout: {
-        background: { color: "transparent" },
-        textColor: "rgba(255, 255, 255, 0.35)",
-      },
-      grid: {
-        vertLines: { color: "rgba(255, 255, 255, 0.035)" },
-        horzLines: { color: "rgba(255, 255, 255, 0.035)" },
-      },
-      rightPriceScale: {
-        visible: false,
-        borderVisible: false,
-      },
-      timeScale: {
-        visible: false,
-        borderVisible: false,
-      },
-      crosshair: {
-        vertLine: { visible: false },
-        horzLine: { visible: false },
-      },
-      handleScroll: false,
-      handleScale: false,
-    });
-
-    const series = chart.addSeries(CandlestickSeries, {
-      upColor: "rgba(147, 197, 253, 0.9)",
-      downColor: "rgba(59, 130, 246, 0.55)",
-      borderUpColor: "rgba(219, 234, 254, 0.9)",
-      borderDownColor: "rgba(96, 165, 250, 0.65)",
-      wickUpColor: "rgba(219, 234, 254, 0.9)",
-      wickDownColor: "rgba(96, 165, 250, 0.65)",
-    });
-
-    chartRef.current = chart;
-    seriesRef.current = series;
-
-    const visibleInitialCandles = 34;
-    const startTime = normalizeTime(
-      Math.floor(Date.now() / 1000) - visibleInitialCandles * 60,
-    );
-
-    let currentPrice = 100;
-    let logicalIndex = 0;
-    let tapeIndex = 0;
-    let tickIndex = 0;
-
-    const renderedCandles: Candle[] = [];
-
-    for (let index = 0; index < visibleInitialCandles; index += 1) {
-      const template = tape[index % tape.length];
-      const time = (startTime + index * 60) as UTCTimestamp;
-      const candle = materializeCandle(template, currentPrice, time);
-
-      renderedCandles.push(candle);
-      currentPrice = candle.close;
-      logicalIndex += 1;
-      tapeIndex = logicalIndex % tape.length;
-    }
-
-    series.setData(renderedCandles);
-    chart.timeScale().setVisibleLogicalRange({
-      from: -2,
-      to: 34,
-    });
-
-    let active = makeActiveCandle(
-      tape[tapeIndex],
-      currentPrice,
-      (startTime + logicalIndex * 60) as UTCTimestamp,
-    );
-
-    const tickTimer = window.setInterval(() => {
-      const currentTemplate = tape[tapeIndex];
-      const tickDelta = currentTemplate.ticks[tickIndex];
-      const tickValue = active.open + tickDelta;
-
-      active.close = tickValue;
-      active.high = Math.max(active.high, tickValue);
-      active.low = Math.min(active.low, tickValue);
-
-      series.update(active);
-
-      tickIndex += 1;
-
-      if (tickIndex >= currentTemplate.ticks.length) {
-        renderedCandles.push({ ...active });
-
-        if (renderedCandles.length > 80) {
-          renderedCandles.shift();
-        }
-
-        currentPrice = active.close;
-        tickIndex = 0;
-        logicalIndex += 1;
-        tapeIndex = (tapeIndex + 1) % tape.length;
-
-        active = makeActiveCandle(
-          tape[tapeIndex],
-          currentPrice,
-          (startTime + logicalIndex * 60) as UTCTimestamp,
-        );
-
-        series.update(active);
-        chart.timeScale().scrollToPosition(4, false);
-      }
-    }, 180);
-
-    let snapshotCloseTimer: number | null = null;
-
-    const snapshotTimer = window.setInterval(() => {
-      setSignal(createSnapshotSignal());
-      setSnapshotActive(true);
-
-      if (snapshotCloseTimer) {
-        window.clearTimeout(snapshotCloseTimer);
-      }
-
-      snapshotCloseTimer = window.setTimeout(() => {
-        setSnapshotActive(false);
-      }, 2200);
-    }, 6000);
-
-    return () => {
-      window.clearInterval(tickTimer);
-      window.clearInterval(snapshotTimer);
-
-      if (snapshotCloseTimer) {
-        window.clearTimeout(snapshotCloseTimer);
-      }
-
-      chart.remove();
-
-      chartRef.current = null;
-      seriesRef.current = null;
-    };
-  }, [tape]);
-
+export function ImgContainer({ src, alt = "" }: { src: string; alt?: string }) {
   return (
-    <div className="auth-chart-wrap">
-      <div ref={containerRef} className="auth-chart" />
+    <div
+      style={{
+        ...panelStyle(theme.dark),
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <div style={cornerStyle()} />
+
+      <img
+        src={src}
+        alt={alt}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          display: "block",
+          opacity: 0.72,
+          filter: "grayscale(0.2) contrast(1.05)",
+        }}
+      />
 
       <div
-        className={
-          snapshotActive ? "chart-snapshot is-active" : "chart-snapshot"
-        }
-      >
-        <div className="snapshot-corner snapshot-corner-tl" />
-        <div className="snapshot-corner snapshot-corner-tr" />
-        <div className="snapshot-corner snapshot-corner-bl" />
-        <div className="snapshot-corner snapshot-corner-br" />
-
-        <svg
-          className="snapshot-trade-path"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-        >
-          <line
-            x1={signal.entry.x}
-            y1={signal.entry.y}
-            x2={signal.exit.x}
-            y2={signal.exit.y}
-          />
-        </svg>
-
-        {signal.mode === "entry" && (
-          <div
-            className="snapshot-point snapshot-entry"
-            style={{
-              left: `${signal.entry.x}%`,
-              top: `${signal.entry.y}%`,
-            }}
-          >
-            
-          </div>
-        )}
-
-        {signal.mode === "exit" && (
-          <div
-            className="snapshot-point snapshot-exit"
-            style={{
-              left: `${signal.exit.x}%`,
-              top: `${signal.exit.y}%`,
-            }}
-          >
-          </div>
-        )}
-
-        <div className="snapshot-label">
-          {signal.mode === "entry" ? "Learning entry" : "Learning exit"}
-        </div>
-      </div>
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(180deg, rgba(14,17,23,0), rgba(14,17,23,0.42))",
+          pointerEvents: "none",
+        }}
+      />
     </div>
   );
 }
 
-function createLoopTape(length: number, seed: number): TapeCandle[] {
-  const random = createSeededRandom(seed);
-  const bias = randomBetween(random, -0.08, 0.08);
+export function DotWave() {
+  const rows = 18;
+  const cols = 42;
 
-  return Array.from({ length }, (_, index) => {
-    const wave = Math.sin((index / length) * Math.PI * 2) * 0.25;
-    const impulse = randomBetween(random, -1.55, 1.65);
-    const closeDelta = wave + impulse + bias;
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: `repeat(${cols}, 6px)`,
+        gap: 7,
+        justifyContent: "center",
+        alignItems: "end",
+        opacity: 0.95,
+      }}
+    >
+      {Array.from({ length: rows * cols }).map((_, i) => {
+        const x = i % cols;
+        const y = Math.floor(i / cols);
+        const wave = Math.sin(x * 0.34) * 5 + Math.cos(x * 0.16) * 4 + 9;
+        const active = rows - y < wave;
 
-    const range = randomBetween(random, 1.25, 3.7);
-
-    const highExtra = Math.max(
-      0.5,
-      Math.max(closeDelta, 0) + range * randomBetween(random, 0.45, 0.95),
-    );
-
-    const lowExtra = Math.max(
-      0.5,
-      Math.max(-closeDelta, 0) + range * randomBetween(random, 0.35, 0.85),
-    );
-
-    return {
-      closeDelta,
-      highExtra,
-      lowExtra,
-      ticks: createTicks(closeDelta, highExtra, lowExtra, 9, random),
-    };
-  });
-}
-
-function createTicks(
-  closeDelta: number,
-  highExtra: number,
-  lowExtra: number,
-  count: number,
-  random: () => number,
-) {
-  return Array.from({ length: count }, (_, index) => {
-    if (index === 0) return 0;
-    if (index === count - 1) return closeDelta;
-
-    const progress = index / (count - 1);
-    const wave =
-      Math.sin(progress * Math.PI * 2) * randomBetween(random, 0.15, 0.65);
-    const noise = randomBetween(random, -0.28, 0.28);
-    const path = closeDelta * progress + wave + noise;
-
-    return clamp(path, -lowExtra, highExtra);
-  });
-}
-
-function materializeCandle(
-  template: TapeCandle,
-  open: number,
-  time: UTCTimestamp,
-): Candle {
-  const close = open + template.closeDelta;
-  const high = open + template.highExtra;
-  const low = open - template.lowExtra;
-
-  return {
-    time,
-    open,
-    high: Math.max(high, open, close),
-    low: Math.min(low, open, close),
-    close,
-  };
-}
-
-function makeActiveCandle(
-  template: TapeCandle,
-  open: number,
-  time: UTCTimestamp,
-): Candle {
-  return {
-    time,
-    open,
-    high: open,
-    low: open,
-    close: open + template.ticks[0],
-  };
-}
-
-function createSnapshotSignal(): SnapshotSignal {
-  const mode: "entry" | "exit" = Math.random() > 0.5 ? "entry" : "exit";
-  const direction: "long" | "short" = Math.random() > 0.35 ? "long" : "short";
-
-  const entryX = randomBetween(Math.random, 16, 34);
-  const exitX = randomBetween(Math.random, 66, 86);
-
-  if (direction === "long") {
-    return {
-      mode,
-      direction,
-      entry: {
-        x: entryX,
-        y: randomBetween(Math.random, 62, 76),
-      },
-      exit: {
-        x: exitX,
-        y: randomBetween(Math.random, 24, 42),
-      },
-    };
-  }
-
-  return {
-    mode,
-    direction,
-    entry: {
-      x: entryX,
-      y: randomBetween(Math.random, 24, 42),
-    },
-    exit: {
-      x: exitX,
-      y: randomBetween(Math.random, 62, 76),
-    },
-  };
-}
-
-function normalizeTime(seconds: number): UTCTimestamp {
-  return (Math.floor(seconds / 60) * 60) as UTCTimestamp;
-}
-
-function createSeededRandom(seed: number) {
-  let value = seed >>> 0;
-
-  return function random() {
-    value += 0x6d2b79f5;
-
-    let result = value;
-    result = Math.imul(result ^ (result >>> 15), result | 1);
-    result ^= result + Math.imul(result ^ (result >>> 7), result | 61);
-
-    return ((result ^ (result >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-function randomBetween(random: () => number, min: number, max: number) {
-  return min + random() * (max - min);
-}
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value));
+        return (
+          <span
+            key={i}
+            style={{
+              width: active ? 5 : 2,
+              height: active ? 5 : 2,
+              borderRadius: 999,
+              background: active ? WHITE : "rgba(238,242,247,0.16)",
+              display: "block",
+              opacity: active ? 0.95 : 0.42,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
 }

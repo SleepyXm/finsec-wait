@@ -1,18 +1,28 @@
-import { useState, useEffect, useRef } from "react";
-import { Pill, theme, FEATURES } from "~/components/UI";
+import { useEffect, useRef, useState } from "react";
+import {
+  ACCENT,
+  FEATURES,
+  Pill,
+  buttonStyle,
+  cornerStyle,
+  gridBgStyle,
+  pageStyle,
+  panelStyle,
+  sectionStyle,
+  theme,
+} from "~/components/UI";
 import { Success } from "~/components/popup";
 import { joinWaitlist, getCount } from "~/services/registration";
-import { FAQS } from "~/data/FAQ";
-import { AuthChartAnimation } from "~/components/UI";
+import { AuthChartAnimation } from "~/components/Charts";
 import { AnimatedCount, FAQ } from "~/components/webui";
 import { WaitlistForm } from "~/components/forms";
-
-// ─── Page ────────────────────────────────────────────────────────────────────
+import { HowItWorks, BacktestBarreplay } from "~/components/sections/mainpage";
 
 export default function WaitlistPage() {
-  const t = theme["dark"];
+  const t = theme.dark;
   const [submitted, setSubmitted] = useState(false);
   const [count, setCount] = useState<number | null>(null);
+  const waitlistRef = useRef<HTMLDivElement>(null);
 
   const loadCount = async () => {
     try {
@@ -33,50 +43,64 @@ export default function WaitlistPage() {
     setSubmitted(true);
   };
 
+  const scrollToWaitlist = () => {
+    waitlistRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <div className="waitlist-page" style={{ fontFamily: "system-ui, sans-serif" }}>
-
-      {/* ── Hero: full-screen split ───────────────────────────────────────── */}
+    <div className="waitlist-page" style={pageStyle}>
       <main className="auth-layout anim-soft-enter">
-
-        {/* Left: animated chart */}
         <aside className="auth-visual">
           <AuthChartAnimation />
-          <div className="auth-visual-copy auth-visual-copy-top anim-fade-up">
+
+          <div className="auth-visual-copy auth-visual-copy-top anim-fade-up font-display">
             <p>Finsec</p>
-            <h1>Track your instruments, Define your strategy and</h1>
+            <h1>Track your instruments, define your strategy and</h1>
           </div>
+
           <div className="auth-visual-copy auth-visual-copy-bottom">
             <h1>Automate the chart out of your life.</h1>
           </div>
         </aside>
 
-        {/* Right: waitlist panel */}
         <section className="auth-panel">
-          <div className="auth-panel-inner anim-fade-up" style={{ padding: "1.75rem 2rem 2.25rem" }}>
+          <div
+            className="auth-panel-inner anim-fade-up"
+            style={{
+              ...panelStyle(t),
+              padding: "1.75rem 2rem 2.25rem",
+            }}
+          >
+            <div style={cornerStyle()} />
 
-            {/* Nav */}
             <div style={{ marginBottom: "2.5rem" }}>
-              <span style={{ fontSize: 16, fontWeight: 500, color: t.text, letterSpacing: 0.5 }}>
+              <span
+                style={{
+                  fontSize: 16,
+                  fontWeight: 600,
+                  color: t.text,
+                  letterSpacing: 0.5,
+                }}
+              >
                 FINSEC
               </span>
             </div>
 
-            {/* Headline */}
             <h1
               style={{
-                fontSize: 32,
-                fontWeight: 500,
+                fontSize: 34,
+                fontWeight: 600,
                 color: t.text,
                 margin: "0 0 .75rem",
-                lineHeight: 1.2,
-                letterSpacing: -0.75,
+                lineHeight: 1.15,
+                letterSpacing: -0.9,
               }}
             >
               You know how to trade.
               <br />
               FINSEC handles the rest.
             </h1>
+
             <p
               style={{
                 fontSize: 15,
@@ -85,51 +109,26 @@ export default function WaitlistPage() {
                 lineHeight: 1.65,
               }}
             >
-              Most retail traders have a strategy. The problem is turning it into
-              something that runs automatically — without hiring a developer or
-              learning to code. FINSEC bridges that gap.
+              Most retail traders have a strategy. The problem is turning it
+              into something that runs automatically — without hiring a developer
+              or learning to code.
             </p>
 
-            {/* Form or success state */}
-            {submitted ? (
-              <Success t={t} />
-            ) : (
-              <WaitlistForm t={t} onSubmit={handleSubmit} />
-            )}
-
-            {/* Stats */}
-            <div
+            <button
+              onClick={scrollToWaitlist}
               style={{
-                borderTop: `0.5px solid ${t.border}`,
-                marginTop: "2.5rem",
-                paddingTop: "1.5rem",
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                textAlign: "center",
+                ...buttonStyle(t),
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                marginBottom: "2.5rem",
               }}
             >
-              <div>
-                <AnimatedCount value={count ?? 0} t={t} />
-                <div style={{ fontSize: 11, color: t.muted, marginTop: 3 }}>
-                  On the waitlist
-                </div>
-              </div>
-              <div
-                style={{
-                  borderLeft: `0.5px solid ${t.border}`,
-                  borderRight: `0.5px solid ${t.border}`,
-                }}
-              >
-                <div style={{ fontSize: 18, fontWeight: 500, color: t.text }}>500</div>
-                <div style={{ fontSize: 11, color: t.muted, marginTop: 3 }}>Beta seats</div>
-              </div>
-              <div>
-                <div style={{ fontSize: 18, fontWeight: 500, color: t.text }}>Free</div>
-                <div style={{ fontSize: 11, color: t.muted, marginTop: 3 }}>During beta</div>
-              </div>
-            </div>
+              Find out more below ↓
+            </button>
 
-            {/* Feature pills */}
+            <Stats count={count} />
+
             <div
               style={{
                 display: "flex",
@@ -139,25 +138,255 @@ export default function WaitlistPage() {
               }}
             >
               {FEATURES.map((f) => (
-                <Pill key={f} t={t}>{f}</Pill>
+                <Pill key={f} t={t}>
+                  {f}
+                </Pill>
               ))}
             </div>
-
           </div>
         </section>
       </main>
 
-      {/* ── FAQ: below the fold ──────────────────────────────────────────── */}
-      <div
+      <HowItWorks />
+      <BacktestBarreplay />
+
+      <section
         style={{
-          maxWidth: 460,
-          margin: "0 auto",
-          padding: "0 2rem 4rem",
+          ...sectionStyle,
+          padding: "6rem 2rem",
+          textAlign: "center",
+          background:
+            "linear-gradient(180deg, rgba(19,24,33,0.94), rgba(14,17,23,0.98))",
         }}
       >
-        <FAQ t={t} />
+        <div style={gridBgStyle} />
+
+        <div
+          style={{
+            ...panelStyle(t),
+            position: "relative",
+            zIndex: 1,
+            maxWidth: 760,
+            margin: "0 auto",
+            padding: "2.5rem",
+          }}
+        >
+          <div style={cornerStyle()} />
+
+          <Pill t={t}>The bigger picture</Pill>
+
+          <h2
+            style={{
+              fontSize: 40,
+              fontWeight: 600,
+              color: t.text,
+              lineHeight: 1.12,
+              letterSpacing: -1,
+              margin: "1.25rem 0 1.5rem",
+            }}
+          >
+            Algo trading used to require a Bloomberg terminal and a team of
+            quants.
+          </h2>
+
+          <p
+            style={{
+              fontSize: 16,
+              color: t.muted,
+              lineHeight: 1.75,
+              margin: "0 0 1.25rem",
+            }}
+          >
+            FINSEC's end goal is simple: make institutional-grade trade
+            automation accessible to any retail trader with a strategy.
+          </p>
+
+          <p
+            style={{
+              fontSize: 16,
+              color: t.muted,
+              lineHeight: 1.75,
+              margin: 0,
+            }}
+          >
+            A world where your edge isn't limited by your ability to code. Where
+            a well-researched strategy runs exactly as you intend it — at 3am,
+            across five tickers, without you touching a button.
+          </p>
+
+          <div
+            className="stat-grid"
+            style={{
+              gap: "1rem",
+              marginTop: "3rem",
+              paddingTop: "2.5rem",
+              borderTop: `1px solid ${t.borderSoft}`,
+            }}
+          >
+            {[
+              { value: "0", label: "Lines of code required" },
+              { value: "< 5 min", label: "From strategy to live" },
+              { value: "24 / 7", label: "Runs while you sleep" },
+            ].map(({ value, label }) => (
+              <div
+                key={label}
+                style={{
+                  ...panelStyle(t),
+                  padding: "1rem",
+                  textAlign: "center",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 26,
+                    fontWeight: 600,
+                    color: ACCENT,
+                    letterSpacing: -0.5,
+                    fontFamily: "var(--font-code), monospace",
+                  }}
+                >
+                  {value}
+                </div>
+
+                <div style={{ fontSize: 12, color: t.muted, marginTop: 5 }}>
+                  {label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        ref={waitlistRef}
+        style={{
+          ...sectionStyle,
+          padding: "5rem 2rem 6rem",
+          background:
+            "linear-gradient(180deg, rgba(14,17,23,0.98), rgba(19,24,33,0.94))",
+        }}
+      >
+        <div style={gridBgStyle} />
+
+        <div
+          style={{
+            ...panelStyle(t),
+            position: "relative",
+            zIndex: 1,
+            maxWidth: 500,
+            margin: "0 auto",
+            padding: "2rem",
+          }}
+        >
+          <div style={cornerStyle()} />
+
+          <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+            <Pill t={t}>Limited beta · 500 seats</Pill>
+
+            <h2
+              style={{
+                fontSize: 32,
+                fontWeight: 600,
+                color: t.text,
+                letterSpacing: -0.75,
+                margin: "1rem 0 0.75rem",
+                lineHeight: 1.2,
+              }}
+            >
+              Get early access.
+            </h2>
+
+            <p
+              style={{
+                fontSize: 15,
+                color: t.muted,
+                lineHeight: 1.65,
+                margin: 0,
+              }}
+            >
+              Free during beta. No credit card. We'll reach out as seats open.
+            </p>
+          </div>
+
+          {submitted ? (
+            <Success t={t} />
+          ) : (
+            <WaitlistForm t={t} onSubmit={handleSubmit} />
+          )}
+
+          <div style={{ marginTop: "2rem" }}>
+            <Stats count={count} />
+          </div>
+        </div>
+      </section>
+
+      <section
+        style={{
+          ...sectionStyle,
+          padding: "4rem 2rem 5rem",
+          background: t.bg,
+        }}
+      >
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            maxWidth: 720,
+            margin: "0 auto",
+          }}
+        >
+          <div
+            style={{
+              ...panelStyle(t),
+              padding: "1.5rem",
+            }}
+          >
+            <div style={cornerStyle()} />
+            <FAQ t={t} />
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function Stats({ count }: { count: number | null }) {
+  const t = theme.dark;
+
+  return (
+    <div
+      className="stat-grid"
+      style={{
+        ...panelStyle(t),
+        padding: "1.25rem 0",
+        textAlign: "center",
+      }}
+    >
+      <div>
+        <AnimatedCount value={count ?? 0} t={t} />
+        <div style={{ fontSize: 11, color: t.muted, marginTop: 3 }}>
+          On the waitlist
+        </div>
       </div>
 
+      <div
+        style={{
+          borderLeft: `1px solid ${t.borderSoft}`,
+          borderRight: `1px solid ${t.borderSoft}`,
+        }}
+      >
+        <div style={{ fontSize: 18, fontWeight: 600, color: t.text }}>500</div>
+        <div style={{ fontSize: 11, color: t.muted, marginTop: 3 }}>
+          Beta seats
+        </div>
+      </div>
+
+      <div>
+        <div style={{ fontSize: 18, fontWeight: 600, color: t.text }}>Free</div>
+        <div style={{ fontSize: 11, color: t.muted, marginTop: 3 }}>
+          During beta
+        </div>
+      </div>
     </div>
   );
 }
