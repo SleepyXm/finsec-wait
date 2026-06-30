@@ -10,7 +10,7 @@ import {
   liquidOrbStyle,
   panelStyle,
   cornerStyle,
-} from "~/components/UI";
+} from "~/components/UI/UI";
 import {
   MockRuleCard,
   MockStrategyInput,
@@ -23,33 +23,37 @@ import BacktestControls from "~/backtest/components/BacktestControls";
 
 const BEFORE_STEPS = [
   {
-    label: "Watch charts manually",
-    detail: "Sit in front of the screen waiting for the same setup to appear.",
-  },
-  {
-    label: "Rewrite rules by hand",
+    label: "Explain the setup every time",
     detail:
-      "Move between notes, indicators, alerts, scripts, and broker windows.",
+      "Your strategy lives across screenshots, notes, chart memory, alerts, and repeated manual decisions.",
   },
   {
-    label: "Execute under pressure",
-    detail: "Enter late, size badly, hesitate, or miss the setup completely.",
+    label: "Convert ideas by hand",
+    detail:
+      "You turn market behaviour into indicators, alerts, scripts, or execution rules manually.",
+  },
+  {
+    label: "Monitor and act under pressure",
+    detail:
+      "You wait for the setup, check conditions, decide sizing, and execute while the market is moving.",
   },
 ];
 
 const AFTER_STEPS = [
   {
-    label: "Define the setup once",
-    detail: "FINSEC turns your rules into structured logic you can inspect.",
-  },
-  {
-    label: "Test before deployment",
-    detail: "Replay candles and backtest behaviour before risking capital.",
-  },
-  {
-    label: "Automate execution",
+    label: "Capture the strategy once",
     detail:
-      "The system watches, triggers, logs, and follows the rules exactly.",
+      "FINSEC turns a strategy snapshot into structured logic that can be reviewed and adjusted.",
+  },
+  {
+    label: "Generate the trading layer",
+    detail:
+      "Use the same strategy logic as an indicator, watch bot, or execution bot depending on what you need.",
+  },
+  {
+    label: "Let the system watch",
+    detail:
+      "FINSEC monitors conditions, triggers actions, and logs behaviour in real time.",
   },
 ];
 
@@ -86,25 +90,25 @@ export function HowItWorks() {
   const { sectionRef, reveal } = useReveal();
 
   const steps = [
-    {
-      no: "01",
-      title: "Write your strategy",
-      copy: "Describe your entry and exit conditions in plain English — or import rules from TradingView's Pine Script. No coding required.",
-      mock: <MockStrategyInput />,
-    },
-    {
-      no: "02",
-      title: "FINSEC translates it",
-      copy: "Your rules get parsed into a structured logic block — visible, editable, and testable against historical data before you go live.",
-      mock: <MockRuleCard />,
-    },
-    {
-      no: "03",
-      title: "It runs. You watch.",
-      copy: "Once deployed, FINSEC monitors your instruments and executes trades automatically — logging every action in real time.",
-      mock: <MockTradeLog />,
-    },
-  ];
+  {
+    no: "01",
+    title: "Capture your strategy",
+    copy: "Define your setup using a strategy snapshot — entries, exits, conditions, risk rules, and the market context you care about.",
+    mock: <MockStrategyInput />,
+  },
+  {
+    no: "02",
+    title: "FINSEC builds the logic",
+    copy: "FINSEC turns that strategy profile into structured trading logic that can be reviewed, adjusted, and tested before deployment.",
+    mock: <MockRuleCard />,
+  },
+  {
+    no: "03",
+    title: "Deploy what you need",
+    copy: "Use the generated logic as an indicator, watch bot, or execution bot — with real-time monitoring and action logs.",
+    mock: <MockTradeLog />,
+  },
+];
 
   return (
     <section
@@ -173,8 +177,7 @@ export function HowItWorks() {
               ...reveal(140),
             }}
           >
-            FINSEC turns your strategy into structured logic, tests it, then
-            runs it in real time.
+            FINSEC captures your strategy, validates the logic, and turns it into an automation for you to deploy.
           </p>
         </div>
 
@@ -620,7 +623,7 @@ export function BacktestBarreplay() {
                 gap: "0.75rem",
                 width: "100%",
                 minWidth: 0,
-                marginBottom: "3rem",
+                marginBottom: "1rem",
               }}
             >
               {included.map((item) => (

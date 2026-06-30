@@ -10,7 +10,7 @@ import {
   panelStyle,
   sectionStyle,
   theme,
-} from "~/components/UI";
+} from "~/components/UI/UI";
 import { Success } from "~/components/popup";
 import { joinWaitlist, getCount } from "~/services/registration";
 import { AuthChartAnimation } from "~/components/Charts";

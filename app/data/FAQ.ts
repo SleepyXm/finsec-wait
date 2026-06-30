@@ -1,23 +1,31 @@
 export const FAQS = [
   {
     q: "Do I need to know how to code?",
-    a: "No. FINSEC is built for traders who already know markets. You define your strategy — entries, exits, conditions — and we handle the automation.",
+    a: "No. FINSEC is built for traders who understand their setup but do not want to manually build indicators, alerts, scripts, or bots. You define the strategy, FINSEC helps turn it into usable trading logic.",
+  },
+  {
+    q: "How do I define my strategy?",
+    a: "You provide a strategy snapshot: the setup, entry conditions, exit rules, risk rules, and the market context that matters. FINSEC uses that to generate structured logic you can review and adjust.",
+  },
+  {
+    q: "What can FINSEC generate?",
+    a: "FINSEC can turn the same strategy logic into an indicator, watch bot, or execution bot depending on how much automation you want.",
+  },
+  {
+    q: "How does testing work?",
+    a: "You can test the generated logic against historical market data before using it live. FINSEC shows key behaviour like trade outcomes, win rate, drawdown, and whether the rules held up across the selected period.",
   },
   {
     q: "What markets are supported?",
     a: "US equities and crypto at launch. Forex and futures are on the roadmap.",
   },
   {
-    q: "How does backtesting work?",
-    a: "Set your rules, pick a date range, and FINSEC runs it against historical data. You get P&L, win rate, and max drawdown — enough to know if your strategy holds up before you risk real money.",
+    q: "Is this connected to my broker?",
+    a: "Broker integrations are planned for the full release. During beta, FINSEC focuses on strategy capture, logic generation, review, and testing.",
   },
   {
     q: "What's the pricing going to be?",
     a: "Free during beta. Waitlist members get early access pricing when paid plans launch.",
-  },
-  {
-    q: "Is this connected to my broker?",
-    a: "Broker integrations are coming in the full release. During beta you can build and backtest strategies — live execution is next.",
   },
   {
     q: "What happens to my email?",

@@ -5,7 +5,7 @@ import {
   panelStyle,
   cornerStyle,
   theme,
-} from "~/components/UI";
+} from "~/components/UI/UI";
 
 export { ACCENT };
 

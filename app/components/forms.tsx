@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Label } from "./UI";
+import { Label } from "./UI/UI";
 
 // ─── Waitlist form ───────────────────────────────────────────────────────────
 

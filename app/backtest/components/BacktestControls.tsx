@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { type BacktestSession } from "~/types/backend";
-import { ACCENT, theme, panelStyle, cornerStyle } from "~/components/UI";
+import { ACCENT, theme, panelStyle, cornerStyle } from "~/components/UI/UI";
 
 interface Props {
   session: BacktestSession;

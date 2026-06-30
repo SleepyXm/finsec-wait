@@ -1,4 +1,4 @@
-import "../animations.css";
+import "../../animations.css";
 import type React from "react";
 
 export const REFERRALS = [
@@ -171,6 +171,8 @@ export const panelStyle = (t = theme.dark): React.CSSProperties => ({
     "linear-gradient(180deg, rgba(238,242,247,0.035), rgba(238,242,247,0.015))",
   border: `1px solid ${t.borderSoft}`,
   borderRadius: 0,
+  backdropFilter: "blur(3px)",
+  WebkitBackdropFilter: "blur(3px)", // Safari needs the prefixed version
 });
 
 export const glassCardStyle = panelStyle;
@@ -353,3 +355,5 @@ export function DotWave() {
     </div>
   );
 }
+
+
