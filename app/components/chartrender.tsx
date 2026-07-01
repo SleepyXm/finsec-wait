@@ -77,29 +77,54 @@ export const CandleStickChart: React.FC<{
   );
 
   const hasSetInitialRange = useRef(false);
+const initialVisibleBarsRef = useRef<number | null>(null);
 
 useEffect(() => {
-  if (!seriesRef.current || !chartRef.current || data.length < 2) return;
+  const chart = chartRef.current;
+  const series = seriesRef.current;
+  const container = containerRef.current;
 
-  const interval = data[1].time - data[0].time;
-  const barSpacing = chartRef.current.timeScale().options().barSpacing;
-  const containerWidth = containerRef.current?.clientWidth ?? 0;
+  if (!series || !chart || !container || data.length < 2) return;
+
+  const timeScale = chart.timeScale();
+
+  const interval = Number(data[1].time) - Number(data[0].time);
   const lastCandle = data[data.length - 1];
 
-  const visibleBars = Math.ceil(containerWidth / barSpacing);
+  if (!hasSetInitialRange.current) {
+    const barSpacing = timeScale.options().barSpacing;
+    const containerWidth = container.clientWidth;
 
-  const whitespace = [];
-  for (let i = 1; i <= visibleBars; i++) {
-    whitespace.push({ time: lastCandle.time + interval * i });
+    initialVisibleBarsRef.current = Math.ceil(containerWidth / barSpacing);
+    hasSetInitialRange.current = true;
   }
 
-  seriesRef.current.setData([...data, ...whitespace]);
+  const visibleBars = initialVisibleBarsRef.current!;
 
-  // Pin the view so the first candle sits at the left edge
-  chartRef.current.timeScale().setVisibleLogicalRange({
-    from: -0.5,
-    to: visibleBars - 0.5,
-  });
+  const rightOffsetBars = Math.floor(visibleBars * 0.15);
+
+  const whitespace = Array.from({ length: rightOffsetBars }, (_, i) => ({
+    time: Number(lastCandle.time) + interval * (i + 1),
+  }));
+
+  series.setData([...data, ...whitespace]);
+
+  let from: number;
+  let to: number;
+
+  // Keep first candle pinned to the far left until the visible window is full
+  if (data.length <= visibleBars) {
+    from = -0.5;
+    to = visibleBars - 0.5;
+  } else {
+    // After the chart fills, follow the latest candle
+    const latestCandleIndex = data.length - 1;
+
+    to = latestCandleIndex + rightOffsetBars + 0.5;
+    from = to - visibleBars;
+  }
+
+  timeScale.setVisibleLogicalRange({ from, to });
 }, [data]);
 
 
