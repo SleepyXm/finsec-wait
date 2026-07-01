@@ -9,6 +9,7 @@ import {
 import { Analytics } from "@vercel/analytics/react";
 import type { Route } from "./+types/root";
 import "./app.css";
+import { Banner } from "./banner";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -34,7 +35,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
 
       <body>
+        
         {children}
+        <Banner />
         <Analytics />
         <ScrollRestoration />
         <Scripts />
