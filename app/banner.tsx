@@ -11,9 +11,19 @@ import {
 
 export function Banner() {
   const [consentGiven, setConsentGiven] = useState("");
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
     setConsentGiven("pending");
+
+    const checkScreen = () => {
+      setIsSmallScreen(window.innerWidth <= 480);
+    };
+
+    checkScreen();
+    window.addEventListener("resize", checkScreen);
+
+    return () => window.removeEventListener("resize", checkScreen);
   }, []);
 
   if (consentGiven !== "pending") return null;
@@ -24,9 +34,9 @@ export function Banner() {
     <div
       style={{
         position: "fixed",
-        left: "1rem",
-        right: "1rem",
-        bottom: "1rem",
+        left: isSmallScreen ? "0.75rem" : "1rem",
+        right: isSmallScreen ? "0.75rem" : "1rem",
+        bottom: isSmallScreen ? "0.75rem" : "1rem",
         zIndex: 9999,
         pointerEvents: "none",
       }}
@@ -34,14 +44,14 @@ export function Banner() {
       <div
         style={{
           ...panelStyle(t),
-          padding: "1rem",
+          padding: isSmallScreen ? "0.9rem" : "1rem",
           display: "flex",
-          alignItems: "center",
+          flexDirection: isSmallScreen ? "column" : "row",
+          alignItems: isSmallScreen ? "stretch" : "center",
           justifyContent: "space-between",
-          gap: "1rem",
+          gap: isSmallScreen ? "0.85rem" : "1rem",
           pointerEvents: "auto",
           boxShadow: "0 24px 80px rgba(0,0,0,0.28)",
-          flexWrap: "wrap",
         }}
       >
         <div style={cornerStyle()} />
@@ -49,9 +59,8 @@ export function Banner() {
         <p
           style={{
             margin: 0,
-            maxWidth: 720,
-            minWidth: 240,
-            flex: "1 1 320px",
+            width: "100%",
+            maxWidth: isSmallScreen ? "100%" : 720,
             color: t.muted,
             fontSize: 14,
             lineHeight: 1.55,
@@ -65,15 +74,18 @@ export function Banner() {
           style={{
             display: "flex",
             alignItems: "center",
+            justifyContent: isSmallScreen ? "stretch" : "flex-end",
             gap: "0.75rem",
-            flexShrink: 0,
-            flexWrap: "wrap",
+            width: isSmallScreen ? "100%" : "auto",
           }}
         >
           <button
             type="button"
             onClick={() => setConsentGiven("accepted")}
-            style={buttonStyle(t)}
+            style={{
+              ...buttonStyle(t),
+              flex: isSmallScreen ? 1 : undefined,
+            }}
           >
             Accept cookies
           </button>
@@ -81,7 +93,10 @@ export function Banner() {
           <button
             type="button"
             onClick={() => setConsentGiven("declined")}
-            style={ghostButtonStyle(t)}
+            style={{
+              ...ghostButtonStyle(t),
+              flex: isSmallScreen ? 1 : undefined,
+            }}
           >
             Decline
           </button>
