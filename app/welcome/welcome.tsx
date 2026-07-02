@@ -151,21 +151,27 @@ export default function WaitlistPage() {
       <BacktestBarreplay />
 
       <section
-  className="grid-glow-section"
-  onMouseMove={(e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    e.currentTarget.style.setProperty("--grid-x", `${e.clientX - rect.left}px`);
-    e.currentTarget.style.setProperty("--grid-y", `${e.clientY - rect.top}px`);
-  }}
-  style={{
-    ...sectionStyle,
-    padding: "6rem 2rem",
-    textAlign: "center",
-    background:
-      "linear-gradient(180deg, rgba(19,24,33,0.94), rgba(14,17,23,0.98))",
-  }}
->
-  <div className="grid-bg-glow" style={gridBgStyle} />
+        className="grid-glow-section"
+        onMouseMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          e.currentTarget.style.setProperty(
+            "--grid-x",
+            `${e.clientX - rect.left}px`,
+          );
+          e.currentTarget.style.setProperty(
+            "--grid-y",
+            `${e.clientY - rect.top}px`,
+          );
+        }}
+        style={{
+          ...sectionStyle,
+          padding: "6rem 2rem",
+          textAlign: "center",
+          background:
+            "linear-gradient(180deg, rgba(19,24,33,0.94), rgba(14,17,23,0.98))",
+        }}
+      >
+        <div className="grid-bg-glow" style={gridBgStyle} />
 
         <div
           style={{
@@ -264,21 +270,27 @@ export default function WaitlistPage() {
       </section>
 
       <section
-  ref={waitlistRef}
-  className="grid-glow-section"
-  onMouseMove={(e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    e.currentTarget.style.setProperty("--grid-x", `${e.clientX - rect.left}px`);
-    e.currentTarget.style.setProperty("--grid-y", `${e.clientY - rect.top}px`);
-  }}
-  style={{
-    ...sectionStyle,
-    padding: "5rem 2rem 6rem",
-    background:
-      "linear-gradient(180deg, rgba(14,17,23,0.98), rgba(19,24,33,0.94))",
-  }}
->
-  <div className="grid-bg-glow" style={gridBgStyle} />
+        ref={waitlistRef}
+        className="grid-glow-section"
+        onMouseMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          e.currentTarget.style.setProperty(
+            "--grid-x",
+            `${e.clientX - rect.left}px`,
+          );
+          e.currentTarget.style.setProperty(
+            "--grid-y",
+            `${e.clientY - rect.top}px`,
+          );
+        }}
+        style={{
+          ...sectionStyle,
+          padding: "5rem 2rem 6rem",
+          background:
+            "linear-gradient(180deg, rgba(14,17,23,0.98), rgba(19,24,33,0.94))",
+        }}
+      >
+        <div className="grid-bg-glow" style={gridBgStyle} />
 
         <div
           style={{
