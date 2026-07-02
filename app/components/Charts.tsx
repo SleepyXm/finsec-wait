@@ -6,6 +6,9 @@ import {
   type ISeriesApi,
   type UTCTimestamp,
 } from "lightweight-charts";
+import { theme, panelStyle, cornerStyle, sectionStyle, Pill, gridBgStyle, ACCENT } from "./UI/UI";
+import { CandleStickChart } from "./chartrender";
+import { useReveal } from "./sections/mainpage";
 
 type Candle = {
   time: UTCTimestamp;

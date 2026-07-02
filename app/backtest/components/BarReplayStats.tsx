@@ -1,11 +1,11 @@
-import { type BacktestSession, type BacktestCandle } from "~/types/backend";
+import { type BarReplaySession, type BarReplayCandle } from "~/types/backend";
 
 interface Props {
-  session: BacktestSession;
-  candles: BacktestCandle[];
+  session: BarReplaySession;
+  candles: BarReplayCandle[];
 }
 
-export default function BacktestStats({ session, candles }: Props) {
+export default function BarReplayStats({ session, candles }: Props) {
   const latest = candles[candles.length - 1];
 
   return (

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { type BacktestSession } from "~/types/backend";
+import { type BarReplaySession } from "~/types/backend";
 import { ACCENT, theme, panelStyle, cornerStyle } from "~/components/UI/UI";
 
 interface Props {
-  session: BacktestSession;
+  session: BarReplaySession;
   cursor: number;
   setCursor: React.Dispatch<React.SetStateAction<number>>;
   totalCandles: number;
@@ -19,7 +19,7 @@ const SPEEDS = [
   { label: "10x",  ms: 50   },
 ];
 
-export default function BacktestControls({
+export default function BarReplayControls({
   session, cursor, setCursor, totalCandles, playing, setPlaying,
 }: Props) {
   const t = theme.dark;

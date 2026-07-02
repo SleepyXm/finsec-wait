@@ -15,11 +15,12 @@ import {
   MockRuleCard,
   MockStrategyInput,
   MockTradeLog,
+  SNAPSHOT_DEMOS,
 } from "~/components/mockinfo";
 
 import { CandleStickChart } from "../chartrender";
-import { type BacktestSession, type BacktestCandle } from "~/types/backend";
-import BacktestControls from "~/backtest/components/BacktestControls";
+import { type BarReplaySession, type BarReplayCandle } from "~/types/backend";
+import BarReplayControls from "~/backtest/components/BarReplayControls";
 
 const BEFORE_STEPS = [
   {
@@ -57,7 +58,7 @@ const AFTER_STEPS = [
   },
 ];
 
-function useReveal() {
+export function useReveal() {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -404,14 +405,14 @@ function StepText({
 }
 
 function ReplayEmbed({ t }: { t: typeof theme.dark }) {
-  const [candles, setCandles] = useState<BacktestCandle[]>([]);
+  const [candles, setCandles] = useState<BarReplayCandle[]>([]);
   const [cursor, setCursor] = useState(0);
   const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     fetch("/demo-data/NQ=F-5m.json")
       .then((res) => res.json())
-      .then((data: BacktestCandle[]) => {
+      .then((data: BarReplayCandle[]) => {
         setCandles(data);
         setCursor(Math.min(60, data.length));
       });
@@ -419,7 +420,7 @@ function ReplayEmbed({ t }: { t: typeof theme.dark }) {
 
   const visibleCandles = candles.slice(0, cursor);
 
-  const session: BacktestSession = {
+  const session: BarReplaySession = {
     session_id: "demo",
     ticker: "Nasdaq",
     interval: "5m",
@@ -454,7 +455,7 @@ function ReplayEmbed({ t }: { t: typeof theme.dark }) {
         )}
       </div>
 
-      <BacktestControls
+      <BarReplayControls
         session={session}
         cursor={cursor}
         setCursor={setCursor}
@@ -501,6 +502,18 @@ export function BacktestBarreplay() {
     "Drawdown visibility",
     "Rule editing before live deployment",
   ];
+
+  const [snapshotIndex, setSnapshotIndex] = useState(0);
+
+useEffect(() => {
+  const timer = window.setInterval(() => {
+    setSnapshotIndex((current) => (current + 1) % SNAPSHOT_DEMOS.length);
+  }, 5200);
+
+  return () => window.clearInterval(timer);
+}, []);
+
+const snapshot = SNAPSHOT_DEMOS[snapshotIndex];
 
   return (
     <section

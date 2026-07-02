@@ -132,3 +132,55 @@ export function MockTradeLog() {
     </div>
   );
 }
+
+
+export const SNAPSHOT_DEMOS = [
+  {
+    label: "Capturing entry",
+    box: {
+      x: 18,
+      y: 38,
+      width: 34,
+      height: 36,
+    },
+    input: [
+      "RSI swept below 30",
+      "Price reclaimed 50MA",
+      "Higher low formed",
+    ],
+    validation: [
+      "Bias: bullish",
+      "Entry condition found",
+      "Risk rule required",
+    ],
+    logic: [
+      "entry.rsi < 30",
+      "entry.ma50 = reclaim",
+      "structure = higher_low",
+    ],
+  },
+  {
+    label: "Capturing exit",
+    box: {
+      x: 50,
+      y: 24,
+      width: 36,
+      height: 34,
+    },
+    input: [
+      "Momentum faded",
+      "Price rejected previous high",
+      "Continuation failed",
+    ],
+    validation: [
+      "Bias: weakening",
+      "Exit condition found",
+      "Stop remains valid",
+    ],
+    logic: [
+      "exit.rejection = previous_high",
+      "exit.momentum = fade",
+      "risk.stop = -2.5%",
+    ],
+  },
+] as const;

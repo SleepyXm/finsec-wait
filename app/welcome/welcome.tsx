@@ -17,6 +17,7 @@ import { AuthChartAnimation } from "~/components/Charts";
 import { AnimatedCount, FAQ } from "~/components/webui";
 import { WaitlistForm } from "~/components/forms";
 import { HowItWorks, BacktestBarreplay } from "~/components/sections/mainpage";
+import { StrategyGenerator } from "~/components/sections/strategy";
 
 export default function WaitlistPage() {
   const t = theme.dark;
@@ -148,6 +149,7 @@ export default function WaitlistPage() {
       </main>
 
       <HowItWorks />
+      <StrategyGenerator />
       <BacktestBarreplay />
 
       <section

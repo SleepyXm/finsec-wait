@@ -1,4 +1,4 @@
-export interface BacktestCandle {
+export interface BarReplayCandle {
   time: number;
   open: number;
   high: number;
@@ -6,7 +6,7 @@ export interface BacktestCandle {
   close: number;
 }
 
-export interface BacktestSession {
+export interface BarReplaySession {
   session_id: string;
   ticker: string;
   interval: string;
@@ -17,11 +17,11 @@ export interface BacktestSession {
   created_at: string;
 }
 
-export interface BacktestResponse {
+export interface BarReplayResponse {
   session_id: string;
   ticker: string;
   interval: string;
   candle_count: number;
   starting_balance: number;
-  candles: BacktestCandle[];
+  candles: BarReplayCandle[];
 }
