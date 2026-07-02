@@ -1,10 +1,13 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { theme, panelStyle,
+import {
+  theme,
+  panelStyle,
   cornerStyle,
   buttonStyle,
-  ghostButtonStyle, } from "~/components/UI/UI";
+  ghostButtonStyle,
+} from "~/components/UI/UI";
 
 export function Banner() {
   const [consentGiven, setConsentGiven] = useState("");
@@ -31,13 +34,14 @@ export function Banner() {
       <div
         style={{
           ...panelStyle(t),
-          padding: "1.35rem",
+          padding: "1rem",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           gap: "1rem",
           pointerEvents: "auto",
           boxShadow: "0 24px 80px rgba(0,0,0,0.28)",
+          flexWrap: "wrap",
         }}
       >
         <div style={cornerStyle()} />
@@ -46,6 +50,8 @@ export function Banner() {
           style={{
             margin: 0,
             maxWidth: 720,
+            minWidth: 240,
+            flex: "1 1 320px",
             color: t.muted,
             fontSize: 14,
             lineHeight: 1.55,
@@ -61,6 +67,7 @@ export function Banner() {
             alignItems: "center",
             gap: "0.75rem",
             flexShrink: 0,
+            flexWrap: "wrap",
           }}
         >
           <button
