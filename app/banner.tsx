@@ -11,10 +11,19 @@ import {
 
 export function Banner() {
   const [consentGiven, setConsentGiven] = useState("");
+  const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
     setConsentGiven("pending");
   }, []);
+
+  const closeBanner = (value: "accepted" | "declined") => {
+    setIsClosing(true);
+
+    window.setTimeout(() => {
+      setConsentGiven(value);
+    }, 260);
+  };
 
   if (consentGiven !== "pending") return null;
 
@@ -70,8 +79,12 @@ export function Banner() {
             alignItems: "center",
             justifyContent: "space-between",
             gap: "1rem",
-            pointerEvents: "auto",
+            pointerEvents: isClosing ? "none" : "auto",
             boxShadow: "0 24px 80px rgba(0,0,0,0.28)",
+
+            opacity: isClosing ? 0 : 1,
+filter: isClosing ? "blur(12px)" : "blur(0px)",
+transition: "opacity 260ms ease, filter 260ms ease",
           }}
         >
           <div style={cornerStyle()} />
@@ -107,7 +120,7 @@ export function Banner() {
           >
             <button
               type="button"
-              onClick={() => setConsentGiven("accepted")}
+              onClick={() => closeBanner("accepted")}
               style={buttonStyle(t)}
             >
               Accept
@@ -115,7 +128,7 @@ export function Banner() {
 
             <button
               type="button"
-              onClick={() => setConsentGiven("declined")}
+              onClick={() => closeBanner("declined")}
               style={ghostButtonStyle(t)}
             >
               Decline
