@@ -11,19 +11,9 @@ import {
 
 export function Banner() {
   const [consentGiven, setConsentGiven] = useState("");
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
     setConsentGiven("pending");
-
-    const checkScreen = () => {
-      setIsSmallScreen(window.innerWidth <= 480);
-    };
-
-    checkScreen();
-    window.addEventListener("resize", checkScreen);
-
-    return () => window.removeEventListener("resize", checkScreen);
   }, []);
 
   if (consentGiven !== "pending") return null;
@@ -31,77 +21,108 @@ export function Banner() {
   const t = theme.dark;
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        left: isSmallScreen ? "0.75rem" : "1rem",
-        right: isSmallScreen ? "0.75rem" : "1rem",
-        bottom: isSmallScreen ? "0.75rem" : "1rem",
-        zIndex: 9999,
-        pointerEvents: "none",
-      }}
-    >
+    <>
+      <style jsx>{`
+        .cookie-banner-copy-full {
+          display: inline;
+        }
+
+        .cookie-banner-copy-short {
+          display: none;
+        }
+
+        @media (max-width: 480px) {
+          .cookie-banner-inner {
+            padding: 0.85rem !important;
+            gap: 0.75rem !important;
+          }
+
+          .cookie-banner-copy-full {
+            display: none;
+          }
+
+          .cookie-banner-copy-short {
+            display: inline;
+          }
+
+          .cookie-banner-actions {
+            gap: 0.5rem !important;
+          }
+        }
+      `}</style>
+
       <div
         style={{
-          ...panelStyle(t),
-          padding: isSmallScreen ? "0.9rem" : "1rem",
-          display: "flex",
-          flexDirection: isSmallScreen ? "column" : "row",
-          alignItems: isSmallScreen ? "stretch" : "center",
-          justifyContent: "space-between",
-          gap: isSmallScreen ? "0.85rem" : "1rem",
-          pointerEvents: "auto",
-          boxShadow: "0 24px 80px rgba(0,0,0,0.28)",
+          position: "fixed",
+          left: "1rem",
+          right: "1rem",
+          bottom: "1rem",
+          zIndex: 9999,
+          pointerEvents: "none",
         }}
       >
-        <div style={cornerStyle()} />
-
-        <p
-          style={{
-            margin: 0,
-            width: "100%",
-            maxWidth: isSmallScreen ? "100%" : 720,
-            color: t.muted,
-            fontSize: 14,
-            lineHeight: 1.55,
-          }}
-        >
-          We use tracking cookies to understand how you use the product and help
-          us improve it. Please accept cookies to help us improve.
-        </p>
-
         <div
+          className="cookie-banner-inner"
           style={{
+            ...panelStyle(t),
+            padding: "1rem",
             display: "flex",
             alignItems: "center",
-            justifyContent: isSmallScreen ? "stretch" : "flex-end",
-            gap: "0.75rem",
-            width: isSmallScreen ? "100%" : "auto",
+            justifyContent: "space-between",
+            gap: "1rem",
+            pointerEvents: "auto",
+            boxShadow: "0 24px 80px rgba(0,0,0,0.28)",
           }}
         >
-          <button
-            type="button"
-            onClick={() => setConsentGiven("accepted")}
-            style={{
-              ...buttonStyle(t),
-              flex: isSmallScreen ? 1 : undefined,
-            }}
-          >
-            Accept cookies
-          </button>
+          <div style={cornerStyle()} />
 
-          <button
-            type="button"
-            onClick={() => setConsentGiven("declined")}
+          <p
             style={{
-              ...ghostButtonStyle(t),
-              flex: isSmallScreen ? 1 : undefined,
+              margin: 0,
+              maxWidth: 720,
+              color: t.muted,
+              fontSize: 14,
+              lineHeight: 1.55,
+              flex: 1,
             }}
           >
-            Decline
-          </button>
+            <span className="cookie-banner-copy-full">
+              We use tracking cookies to understand how you use the product and
+              help us improve it. Please accept cookies to help us improve.
+            </span>
+
+            <span className="cookie-banner-copy-short">
+              We use cookies to improve the product.
+            </span>
+          </p>
+
+          <div
+            className="cookie-banner-actions"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.75rem",
+              flexShrink: 0,
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => setConsentGiven("accepted")}
+              style={buttonStyle(t)}
+            >
+              Accept
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setConsentGiven("declined")}
+              style={ghostButtonStyle(t)}
+            >
+              Decline
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
