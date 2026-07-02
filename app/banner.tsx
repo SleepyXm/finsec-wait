@@ -31,7 +31,7 @@ export function Banner() {
 
   return (
     <>
-      <style jsx>{`
+      <style >{`
         .cookie-banner-copy-full {
           display: inline;
         }
@@ -71,22 +71,24 @@ export function Banner() {
         }}
       >
         <div
-          className="cookie-banner-inner"
-          style={{
-            ...panelStyle(t),
-            padding: "1rem",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "1rem",
-            pointerEvents: isClosing ? "none" : "auto",
-            boxShadow: "0 24px 80px rgba(0,0,0,0.28)",
+  className="cookie-banner-inner"
+  style={{
+    ...panelStyle(t),
+    padding: "1rem",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: "1rem",
+    pointerEvents: isClosing ? "none" : "auto",
+    boxShadow: "0 24px 80px rgba(0,0,0,0.28)",
 
-            opacity: isClosing ? 0 : 1,
-filter: isClosing ? "blur(12px)" : "blur(0px)",
-transition: "opacity 260ms ease, filter 260ms ease",
-          }}
-        >
+    opacity: isClosing ? 0 : 1,
+    filter: isClosing ? "blur(12px)" : "blur(0px)",
+    WebkitFilter: isClosing ? "blur(12px)" : "blur(0px)",
+    transition:
+      "opacity 320ms ease, filter 320ms ease, -webkit-filter 320ms ease",
+  }}
+>
           <div style={cornerStyle()} />
 
           <p
