@@ -774,100 +774,172 @@ Grid content
   }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   STRATEGY GENERATOR
+   ACCENT = #8FAADC = rgb(143, 170, 220)
+═══════════════════════════════════════════════════════════ */
 
-
-/* ----------------------------- */
-/* Strategy Animation            */
-/* ----------------------------- */
-
-.strategy-snapshot-dim {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  opacity: 0;
-  pointer-events: none;
-  background: rgba(3, 7, 18, 0.62);
-  transition: opacity 260ms ease;
+/* ── Phase 1: capture box ────────────────────────────────────
+   Full height minus the time axis (~26px at bottom).
+   Width expands left → right, stops before y-axis (~62%).
+   No overflow:hidden — parent chart div clips it.
+────────────────────────────────────────────────────────── */
+@keyframes capture-expand-width {
+  0%   { width: 0%;   opacity: 0; }
+  3%   { opacity: 1; }
+  100% { width: 32%;  opacity: 1; }
 }
 
-.strategy-snapshot-dim.is-active {
+
+.strategy-capture-box::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: 100%;
+  height: calc(100% + 2px);
+  width: 100vw;
+  background: rgba(14, 17, 23, 0.7);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.strategy-capture-box::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 100%;
+  height: calc(100% + 2px);
+  width: 100vw;
+  background: rgba(14, 17, 23, 0.7);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.strategy-capture-box.is-dimmed::before,
+.strategy-capture-box.is-dimmed::after {
   opacity: 1;
 }
 
-.strategy-snapshot-box {
+
+.strategy-capture-box {
   position: absolute;
-  z-index: 4;
+  top: 0;
+  left: 46%;
+  height: calc(100% - 26px);
+  width: 0%;
   opacity: 0;
+  z-index: 10;
   pointer-events: none;
-  transform: scale(0.96);
-  transform-origin: center;
-  transition:
-    opacity 260ms ease,
-    transform 260ms ease;
+  border-top:    1px solid rgba(143, 170, 220, 0.5);
+  border-bottom: 1px solid rgba(143, 170, 220, 0.5);
+  border-right:  1px solid rgba(143, 170, 220, 0.5);
+  border-left:  1px solid rgba(143, 170, 220, 0.5);
 }
 
-.strategy-snapshot-box.is-active {
+.strategy-capture-box.is-active {
+  animation: capture-expand-width 1100ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Phase 2: output text inside the captured region ──────── */
+.strategy-capture-output {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 4rem;
+  right: 1rem;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.strategy-capture-output.is-active {
   opacity: 1;
-  transform: scale(1);
+  transform: translateY(0);
 }
 
-.strategy-snapshot-glow {
-  position: absolute;
-  inset: 0;
-  background: rgba(147, 197, 253, 0.045);
-  box-shadow:
-    inset 0 0 0 1px rgba(147, 197, 253, 0.12),
-    0 0 46px rgba(147, 197, 253, 0.22);
-  backdrop-filter: brightness(1.55) contrast(1.08);
+/* ── Phase 3: PineScript panel ───────────────────────────── */
+/* panelStyle() handles background/border — class handles animation */
+.strategy-pine-panel {
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
 }
 
-.strategy-snapshot-corner {
-  position: absolute;
-  z-index: 2;
-  width: 28px;
-  height: 28px;
-  border-color: rgba(219, 234, 254, 0.92);
+.strategy-pine-panel.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
-.strategy-snapshot-corner-tl {
-  left: 0;
-  top: 0;
-  border-left: 2px solid;
-  border-top: 2px solid;
-}
-
-.strategy-snapshot-corner-tr {
-  right: 0;
-  top: 0;
-  border-right: 2px solid;
-  border-top: 2px solid;
-}
-
-.strategy-snapshot-corner-bl {
-  left: 0;
-  bottom: 0;
-  border-left: 2px solid;
-  border-bottom: 2px solid;
-}
-
-.strategy-snapshot-corner-br {
-  right: 0;
-  bottom: 0;
-  border-right: 2px solid;
-  border-bottom: 2px solid;
-}
-
-.strategy-snapshot-label {
-  position: absolute;
-  left: 12px;
-  bottom: 10px;
-  z-index: 3;
-  padding: 5px 8px;
-  border: 1px solid rgba(238, 242, 247, 0.14);
-  background: rgba(14, 17, 23, 0.72);
-  color: rgba(238, 242, 247, 0.82);
-  font-family: var(--font-code), monospace;
+/* ── PineScript toggle ────────────────────────────────────── */
+.strategy-code-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.3rem 0;
+  background: transparent;
+  border: none;
+  color: rgba(238, 242, 247, 0.42);
   font-size: 10px;
-  letter-spacing: 0.08em;
+  font-family: var(--font-code), monospace;
+  letter-spacing: 0.7px;
   text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.strategy-code-toggle:hover {
+  color: rgba(238, 242, 247, 0.75);
+}
+
+.strategy-code-chevron {
+  transition: transform 0.2s ease;
+  line-height: 1;
+}
+
+.strategy-code-chevron.open {
+  transform: rotate(180deg);
+}
+
+/* ── Code block ──────────────────────────────────────────── */
+.strategy-code-block {
+  margin-top: 0.4rem;
+  max-height: 210px;
+  overflow-y: auto;
+  border-top: 1px solid rgba(238, 242, 247, 0.07);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(143, 170, 220, 0.2) transparent;
+}
+
+.strategy-code-block pre {
+  margin: 0;
+  padding: 0.7rem 0;
+  font-family: var(--font-code), monospace;
+  font-size: 10.5px;
+  line-height: 1.72;
+  color: rgba(238, 242, 247, 0.75);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+
+@media (max-width: 768px) {
+  .strategy-capture-box {
+    left: 12%;
+  }
+
+  @keyframes capture-expand-width {
+    0%   { width: 0%;  opacity: 0; }
+    3%   { opacity: 1; }
+    100% { width: 68%; opacity: 1; }
+  }
+
+  .strategy-capture-output {
+    left: 3rem;
+    right: 0.5rem;
+    bottom: 2rem;
+  }
 }

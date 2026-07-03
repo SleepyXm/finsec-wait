@@ -1,9 +1,16 @@
-import { useEffect, useState,  } from "react";
-import { ACCENT, gridBgStyle, Pill, sectionStyle, theme } from "../UI/UI";
+import { useEffect, useRef, useState } from "react";
+import {
+  ACCENT,
+  cornerStyle,
+  gridBgStyle,
+  panelStyle,
+  Pill,
+  sectionStyle,
+  theme,
+} from "../UI/UI";
 import type { UTCTimestamp } from "lightweight-charts";
 import { CandleStickChart } from "../chartrender";
 import { useReveal } from "./mainpage";
-
 
 type Candle = {
   time: UTCTimestamp;
@@ -13,60 +20,120 @@ type Candle = {
   close: number;
 };
 
-const STRATEGY_GENERATOR_DEMO = {
-  label: "Setup captured",
-  box: {
-    x: 24,
-    y: 34,
-    width: 42,
-    height: 42,
-  },
-  output: [
-    ["Direction", "Long"],
-    ["Trigger", "Reclaim after RSI sweep"],
-    ["Risk", "Stop: recent low"],
-    ["Target", "2R"],
-  ],
-} as const;
+type AnimPhase = 0 | 1 | 2 | 3;
 
-type StrategyGeneratorDemo = typeof STRATEGY_GENERATOR_DEMO;
+const SETUP_OUTPUT: [string, string][] = [
+  ["Direction", "Long"],
+  ["Trigger",   "Reclaim after RSI sweep"],
+  ["Risk",      "Stop: recent low"],
+  ["Target",    "2R"],
+];
 
-function StrategyGeneratorChart({
-  demo,
-  t,
-}: {
-  demo: StrategyGeneratorDemo;
-  t: typeof theme.dark;
-}) {
+const PINESCRIPT = `//@version=5
+strategy("RSI Reclaim – Long", overlay=true,
+         default_qty_type=strategy.percent_of_equity,
+         default_qty_value=2)
+
+// ── Inputs ────────────────────────────────────────
+rsiLen = input.int(14,    "RSI Length")
+rsiOS  = input.float(30,  "Oversold level")
+rrR    = input.float(2.0, "R:R target")
+
+// ── Core logic ────────────────────────────────────
+rsi       = ta.rsi(close, rsiLen)
+sweptOS   = ta.lowest(rsi, 3) < rsiOS
+reclaimed = rsi > rsiOS and rsi[1] <= rsiOS
+entry     = sweptOS[1] and reclaimed
+
+// ── Risk management ───────────────────────────────
+recentLow = ta.lowest(low, 5)
+stopDist  = close - recentLow
+target    = close + stopDist * rrR
+
+if entry
+    strategy.entry("Long", strategy.long)
+    strategy.exit("TP/SL", "Long",
+                  stop  = recentLow,
+                  limit = target)
+
+// ── Visuals ───────────────────────────────────────
+plotshape(entry,
+          style    = shape.triangleup,
+          location = location.belowbar,
+          color    = color.new(color.lime, 0),
+          size     = size.small)`;
+
+function StrategyGeneratorChart({ t }: { t: typeof theme.dark }) {
   const [candles, setCandles] = useState<Candle[]>([]);
-  const [snapshotActive, setSnapshotActive] = useState(false);
+  const [phase, setPhase]     = useState<AnimPhase>(0);
+  const [codeOpen, setCodeOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const timers = useRef<number[]>([]);
+
+ useEffect(() => {
+
+  fetch("/demo-data/NQ=F-5m.json")
+
+    .then((r) => r.json())
+
+    .then((data: Candle[]) => {
+
+      const isMobile = window.innerWidth < 768;
+
+      setCandles(
+
+        isMobile
+
+          ? data.slice(375, 425)
+
+          : data.slice(40, 450)
+
+      );
+
+    });
+
+}, []);
+
+  const runSequence = () => {
+    timers.current.forEach(clearTimeout);
+    setPhase(0);
+    setCodeOpen(false);
+    timers.current = [
+      window.setTimeout(() => setPhase(1), 300),   // box starts expanding
+      window.setTimeout(() => setPhase(2), 1500),  // box done → dim + text
+      window.setTimeout(() => setPhase(3), 2300),  // pinescript panel
+    ];
+  };
 
   useEffect(() => {
-    fetch("/demo-data/NQ=F-5m.json")
-      .then((res) => res.json())
-      .then((data: Candle[]) => {
-        setCandles(data.slice(40, 450));
-      });
-  }, []);
+    if (candles.length === 0) return;
+    const el = containerRef.current;
+    if (!el) return;
 
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setSnapshotActive(true);
-    }, 650);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          runSequence();
+        } else {
+          timers.current.forEach(clearTimeout);
+          setPhase(0);
+          setCodeOpen(false);
+        }
+      },
+      { threshold: 0.4 },
+    );
 
-    return () => window.clearTimeout(timer);
-  }, []);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [candles.length]);
+
+  useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gap: "1rem",
-        minWidth: 0,
-      }}
-    >
+    <div ref={containerRef} style={{ display: "grid", gap: "0.75rem", minWidth: 0 }}>
+
+      {/* ── Chart ── */}
       <div
-        className="strategy-snapshot-chart"
         style={{
           position: "relative",
           width: "100%",
@@ -79,70 +146,82 @@ function StrategyGeneratorChart({
           userSelect: "none",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            pointerEvents: "none",
-            userSelect: "none",
-          }}
-        >
+        <div style={{ position: "absolute", inset: 0 }}>
           {candles.length > 0 ? (
-            <CandleStickChart
-              data={candles}
-              renderTradeUI={null}
-              trades={[]}
-            />
+            <CandleStickChart data={candles} renderTradeUI={null} trades={[]} />
           ) : (
-            <p style={{ fontSize: 13, color: "rgba(238,242,247,0.5)" }}>
-              Loading…
-            </p>
+            <p style={{ fontSize: 13, color: t.muted, padding: "1rem" }}>Loading…</p>
           )}
         </div>
 
+        {/* Phase 2: dim everything to the right of the capture box, above time axis */}
         <div
-          className={
-            snapshotActive
-              ? "strategy-snapshot-dim is-active"
-              : "strategy-snapshot-dim"
-          }
-        />
+  className={[
+    "strategy-capture-box",
+    phase >= 1 ? "is-active" : "",
+    phase >= 2 ? "is-dimmed" : "",
+  ].join(" ")}
+/>
 
-        <div
-          className={
-            snapshotActive
-              ? "strategy-snapshot-box is-active"
-              : "strategy-snapshot-box"
-          }
-          style={{
-            left: `${demo.box.x}%`,
-            top: `${demo.box.y}%`,
-            width: `${demo.box.width}%`,
-            height: `${demo.box.height}%`,
-          }}
-        >
-          <div className="strategy-snapshot-corner strategy-snapshot-corner-tl" />
-          <div className="strategy-snapshot-corner strategy-snapshot-corner-tr" />
-          <div className="strategy-snapshot-corner strategy-snapshot-corner-bl" />
-          <div className="strategy-snapshot-corner strategy-snapshot-corner-br" />
+        {/* Phase 1: capture box — full height minus time axis, width expands */}
+        <div className={`strategy-capture-box${phase >= 1 ? " is-active" : ""}`}>
+          {/* cornerStyle() from UI handles the four corner accents */}
+          <div style={cornerStyle()} />
 
-          <div className="strategy-snapshot-glow" />
+          {/* Phase 2: setup output overlaid inside the captured region */}
+          <div className={`strategy-capture-output${phase >= 2 ? " is-active" : ""}`}>
+            <div
+              style={{
+                fontSize: 9,
+                fontFamily: "var(--font-code), monospace",
+                textTransform: "uppercase",
+                letterSpacing: "0.9px",
+                color: t.muted2,
+                marginBottom: "0.5rem",
+              }}
+            >
+              Setup captured
+            </div>
 
-          <div className="strategy-snapshot-label">
-            <details open>
-              <summary>{demo.label}</summary>
-
-              <div>
-                {demo.output.map(([label, value]) => (
-                  <div key={label}>
-                    <span>{label}</span>
-                    <span>{value}</span>
-                  </div>
-                ))}
-              </div>
-            </details>
+            <div style={{ display: "grid", gap: "0.3rem" }}>
+              {SETUP_OUTPUT.map(([label, value]) => (
+                <div key={label} style={{ display: "flex", gap: "1rem", fontSize: 12 }}>
+                  <span
+                    style={{
+                      color: t.muted2,
+                      fontFamily: "var(--font-code), monospace",
+                      minWidth: 70,
+                    }}
+                  >
+                    {label}
+                  </span>
+                  <span style={{ color: t.text, fontWeight: 600 }}>{value}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* ── PineScript panel — outside pointer-events:none chart div ── */}
+      <div
+        className={`strategy-pine-panel${phase >= 3 ? " is-active" : ""}`}
+        style={{ ...panelStyle(t), padding: "0.4rem 0.75rem" }}
+      >
+        <button
+          type="button"
+          className="strategy-code-toggle"
+          onClick={() => setCodeOpen((o) => !o)}
+        >
+          <span>PineScript output</span>
+          <span className={`strategy-code-chevron${codeOpen ? " open" : ""}`}>▾</span>
+        </button>
+
+        {codeOpen && (
+          <div className="strategy-code-block">
+            <pre><code>{PINESCRIPT}</code></pre>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -158,16 +237,8 @@ export function StrategyGenerator() {
       className="grid-glow-section"
       onMouseMove={(e) => {
         const rect = e.currentTarget.getBoundingClientRect();
-
-        e.currentTarget.style.setProperty(
-          "--grid-x",
-          `${e.clientX - rect.left}px`,
-        );
-
-        e.currentTarget.style.setProperty(
-          "--grid-y",
-          `${e.clientY - rect.top}px`,
-        );
+        e.currentTarget.style.setProperty("--grid-x", `${e.clientX - rect.left}px`);
+        e.currentTarget.style.setProperty("--grid-y", `${e.clientY - rect.top}px`);
       }}
       style={{
         ...sectionStyle,
@@ -179,8 +250,7 @@ export function StrategyGenerator() {
         display: "flex",
         alignItems: "center",
         padding: "6rem 2rem",
-        background:
-          "linear-gradient(180deg, rgba(14,17,23,0.98), rgba(19,24,33,0.94))",
+        background: "linear-gradient(180deg, rgba(14,17,23,0.98), rgba(19,24,33,0.94))",
       }}
     >
       <div className="grid-bg-glow" style={gridBgStyle} />
@@ -225,19 +295,12 @@ export function StrategyGenerator() {
             }}
           >
             Capture chart context or describe the setup. FINSEC converts it into
-            a structured strategy definition that can be applied to replay and
-            backtesting.
+            a structured strategy definition that can be applied to replay and backtesting.
           </p>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gap: "1.5rem",
-            ...reveal(220),
-          }}
-        >
-          <StrategyGeneratorChart demo={STRATEGY_GENERATOR_DEMO} t={t} />
+        <div style={{ display: "grid", gap: "1.5rem", ...reveal(220) }}>
+          <StrategyGeneratorChart t={t} />
 
           <div
             style={{
@@ -246,44 +309,34 @@ export function StrategyGenerator() {
               gap: "0.75rem",
             }}
           >
-            {[
-              ["Ticker", "Nasdaq"],
-              ["Interval", "5m"],
-              ["Output", "Strategy definition"],
-            ].map(([label, value]) => (
-              <div
-                key={label}
-                style={{
-                  borderTop: `1px solid ${t.borderSoft}`,
-                  paddingTop: "0.8rem",
-                  minWidth: 0,
-                }}
-              >
+            {([["Ticker", "Nasdaq"], ["Interval", "5m"], ["Output", "Strategy definition"]] as const).map(
+              ([label, value]) => (
                 <div
+                  key={label}
                   style={{
-                    fontSize: 10,
-                    color: t.muted2,
-                    fontFamily: "var(--font-code), monospace",
-                    marginBottom: 4,
-                    letterSpacing: 0.8,
-                    textTransform: "uppercase",
+                    borderTop: `1px solid ${t.borderSoft}`,
+                    paddingTop: "0.8rem",
+                    minWidth: 0,
                   }}
                 >
-                  {label}
+                  <div
+                    style={{
+                      fontSize: 10,
+                      color: t.muted2,
+                      fontFamily: "var(--font-code), monospace",
+                      marginBottom: 4,
+                      letterSpacing: 0.8,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {label}
+                  </div>
+                  <div style={{ fontSize: 12, color: t.text, fontWeight: 600, overflowWrap: "break-word" }}>
+                    {value}
+                  </div>
                 </div>
-
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: t.text,
-                    fontWeight: 600,
-                    overflowWrap: "break-word",
-                  }}
-                >
-                  {value}
-                </div>
-              </div>
-            ))}
+              )
+            )}
           </div>
 
           <button
@@ -291,8 +344,8 @@ export function StrategyGenerator() {
             style={{
               height: 44,
               width: "100%",
-              border: `1px solid rgba(147, 197, 253, 0.36)`,
-              background: "rgba(147, 197, 253, 0.92)",
+              border: `1px solid ${t.accentBorder}`,
+              background: t.accent,
               color: "#0e1117",
               fontSize: 12,
               fontWeight: 700,

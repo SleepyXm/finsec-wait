@@ -16,7 +16,8 @@ import { joinWaitlist, getCount } from "~/services/registration";
 import { AuthChartAnimation } from "~/components/Charts";
 import { AnimatedCount, FAQ } from "~/components/webui";
 import { WaitlistForm } from "~/components/forms";
-import { HowItWorks, BacktestBarreplay } from "~/components/sections/mainpage";
+import { HowItWorks } from "~/components/sections/mainpage";
+import { BacktestBarreplay } from "~/components/sections/backttestbarreplay";
 import { StrategyGenerator } from "~/components/sections/strategy";
 
 export default function WaitlistPage() {

@@ -1,5 +1,6 @@
 import { FAQS } from '~/data/FAQ';
 import { useEffect, useState, useRef } from 'react';
+import { theme, ACCENT } from './UI/UI';
 
 // ─── FAQ ────────────────────────────────────────────────────────────────────
 
@@ -188,6 +189,63 @@ export function AnimatedCount({ value, t }: { value: number; t: any }) {
         digitPlace -= 1;
         return <DigitReel key={key} digit={Number(char)} />;
       })}
+    </div>
+  );
+}
+
+
+export function StepText({
+  no,
+  label,
+  detail,
+  muted = false,
+}: {
+  no: number;
+  label: string;
+  detail: string;
+  muted?: boolean;
+}) {
+  const t = theme.dark;
+
+  return (
+    <div style={{ display: "flex", gap: "0.875rem", alignItems: "flex-start" }}>
+      <span
+        style={{
+          fontSize: 11,
+          color: muted ? t.hint : ACCENT,
+          letterSpacing: 0.5,
+          marginTop: 2,
+          minWidth: 18,
+          fontFamily: "var(--font-code), monospace",
+        }}
+      >
+        {String(no).padStart(2, "0")}
+      </span>
+
+      <div>
+        <div
+          style={{
+            fontSize: 14,
+            fontWeight: 600,
+            color: muted ? "rgba(238,242,247,0.34)" : t.text,
+            marginBottom: "0.3rem",
+            textDecoration: muted ? "line-through" : "none",
+            textDecorationColor: "rgba(238,242,247,0.14)",
+          }}
+        >
+          {label}
+        </div>
+
+        <div
+          style={{
+            fontSize: 13,
+            color: muted ? "rgba(238,242,247,0.22)" : t.muted,
+            lineHeight: 1.55,
+          }}
+        >
+          {detail}
+        </div>
+      </div>
     </div>
   );
 }
