@@ -832,10 +832,7 @@ Grid content
   opacity: 0;
   z-index: 10;
   pointer-events: none;
-  border-top:    1px solid rgba(143, 170, 220, 0.5);
-  border-bottom: 1px solid rgba(143, 170, 220, 0.5);
-  border-right:  1px solid rgba(143, 170, 220, 0.5);
-  border-left:  1px solid rgba(143, 170, 220, 0.5);
+  border: 1px solid rgba(143, 170, 220, 0.5);
 }
 
 .strategy-capture-box.is-active {
