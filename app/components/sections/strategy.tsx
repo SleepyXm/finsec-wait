@@ -23,10 +23,10 @@ type Candle = {
 type AnimPhase = 0 | 1 | 2 | 3;
 
 const SETUP_OUTPUT: [string, string][] = [
-  ["Direction", "Long"],
-  ["Trigger",   "Reclaim after RSI sweep"],
-  ["Risk",      "Stop: recent low"],
-  ["Target",    "2R"],
+  ["Direction", "Short"],
+  ["Trigger",   "Forming Head and Shoulders"],
+  ["Risk",      "Stop: Previous Bullish OB"],
+  ["Target",    "3RR"],
 ];
 
 const PINESCRIPT = `//@version=5
@@ -190,7 +190,7 @@ function StrategyGeneratorChart({ t }: { t: typeof theme.dark }) {
                     style={{
                       color: t.muted2,
                       fontFamily: "var(--font-code), monospace",
-                      minWidth: 70,
+                      minWidth: 50,
                     }}
                   >
                     {label}

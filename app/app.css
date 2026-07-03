@@ -934,12 +934,12 @@ Grid content
   @keyframes capture-expand-width {
     0%   { width: 0%;  opacity: 0; }
     3%   { opacity: 1; }
-    100% { width: 68%; opacity: 1; }
+    100% { width: 65%; opacity: 1; }
   }
 
   .strategy-capture-output {
     left: 3rem;
-    right: 0.5rem;
+    right: 0.25rem;
     bottom: 2rem;
   }
 }
