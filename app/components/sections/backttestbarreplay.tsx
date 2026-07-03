@@ -174,7 +174,7 @@ const snapshot = SNAPSHOT_DEMOS[snapshotIndex];
               ...reveal(80),
             }}
           >
-            Bar replay and backtesting.
+            Bar replay and Backtesting combined.
             <br />
             <span style={{ color: ACCENT }}>Both free.</span>
           </h2>
