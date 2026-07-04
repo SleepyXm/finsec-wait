@@ -88,7 +88,7 @@ export default function WaitlistPage() {
               </span>
             </div>
 
-            <h1
+            <p
               style={{
                 fontSize: 34,
                 fontWeight: 600,
@@ -101,7 +101,7 @@ export default function WaitlistPage() {
               You know how to trade.
               <br />
               FINSEC handles the rest.
-            </h1>
+            </p>
 
             <p
               style={{
