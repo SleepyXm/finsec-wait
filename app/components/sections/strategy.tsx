@@ -342,6 +342,7 @@ export function StrategyGenerator() {
           <button
             type="button"
             style={{
+              
               height: 44,
               width: "100%",
               border: `1px solid ${t.accentBorder}`,

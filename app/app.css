@@ -568,3 +568,18 @@ Grid content
     bottom: 2rem;
   }
 }
+
+
+.hero-heading--mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .hero-heading--desktop {
+    display: none;
+  }
+
+  .hero-heading--mobile {
+    display: block;
+  }
+}

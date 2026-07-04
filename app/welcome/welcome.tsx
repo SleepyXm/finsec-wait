@@ -49,6 +49,19 @@ export default function WaitlistPage() {
     waitlistRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const howItWorksRef = useRef<HTMLDivElement>(null);
+
+const scrollToHowItWorks = () => {
+  howItWorksRef.current?.scrollIntoView({ behavior: "smooth" });
+};
+
+   const BarReplayRef = useRef<HTMLDivElement>(null);
+
+const scrollToBarReplay = () => {
+  BarReplayRef.current?.scrollIntoView({ behavior: "smooth" });
+};
+
+
   return (
     <div className="waitlist-page" style={pageStyle}>
       <main className="auth-layout anim-soft-enter">
@@ -89,6 +102,7 @@ export default function WaitlistPage() {
             </div>
 
             <p
+              className="hero-heading hero-heading--desktop"
               style={{
                 fontSize: 34,
                 fontWeight: 600,
@@ -101,6 +115,21 @@ export default function WaitlistPage() {
               You know how to trade.
               <br />
               FINSEC handles the rest.
+            </p>
+
+            <p
+              className="hero-heading hero-heading--mobile"
+              style={{
+                fontSize: 34,
+                fontWeight: 600,
+                color: t.text,
+                margin: "0 0 .75rem",
+                lineHeight: 1.15,
+                letterSpacing: -0.9,
+              }}
+            >
+              Define your strategies, entries, exits, and automate the chart out
+              of your life.
             </p>
 
             <p
@@ -117,13 +146,14 @@ export default function WaitlistPage() {
             </p>
 
             <button
-              onClick={scrollToWaitlist}
+              onClick={scrollToHowItWorks}
               style={{
                 ...buttonStyle(t),
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
                 marginBottom: "2.5rem",
+                marginLeft: "22.5%",
               }}
             >
               Find out more below ↓
@@ -149,7 +179,10 @@ export default function WaitlistPage() {
         </section>
       </main>
 
+      <div ref={howItWorksRef}>
       <HowItWorks />
+      </div>
+
       <StrategyGenerator />
       <BacktestBarreplay />
 
