@@ -67,7 +67,7 @@
   }
 }
 
-@keyframes auth-title-in {
+@keyframes entry-title-in {
   from {
     opacity: 0;
     filter: blur(12px);

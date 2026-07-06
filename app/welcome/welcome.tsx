@@ -63,17 +63,17 @@ const scrollToBarReplay = () => {
 
 
   return (
-    <div className="waitlist-page" style={pageStyle}>
-      <main className="auth-layout anim-soft-enter">
-        <aside className="auth-visual">
+    <div className="entry-page" style={pageStyle}>
+      <main className="entry-layout anim-soft-enter">
+        <aside className="entry-visual">
           <AuthChartAnimation />
 
-          <div className="auth-visual-copy auth-visual-copy-top anim-fade-up font-display">
+          <div className="entry-visual-copy entry-visual-copy-top anim-fade-up font-display">
             <p>Finsec</p>
             <h1>Define your strategy, entries, exits</h1>
           </div>
 
-          <div className="auth-visual-copy auth-visual-copy-bottom">
+          <div className="entry-visual-copy entry-visual-copy-bottom">
             <h1>And automate the chart out of your life</h1>
           </div>
         </aside>
