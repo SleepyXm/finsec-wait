@@ -204,12 +204,18 @@ export const buttonStyle = (t = theme.dark): React.CSSProperties => ({
   transition: "transform 0.18s ease, opacity 0.18s ease",
 });
 
-export const ctaButtonStyle = (
-  t = theme.dark,
-): React.CSSProperties => ({
-  ...buttonStyle(t),
-  background: "#FFFFFF",
-  color: "#0E1117",
+export const ctaButtonStyle = (t = theme.dark): React.CSSProperties => ({
+  background: WHITE,
+  color: t.btnText,
+  border: "none",
+  borderRadius: 8,
+  padding: "0.85rem 1.25rem",
+  fontSize: 13,
+  fontWeight: 600,
+  letterSpacing: 0.4,
+  textTransform: "uppercase",
+  cursor: "pointer",
+  transition: "transform 0.18s ease, opacity 0.18s ease",
 });
 
 export const ghostButtonStyle = (t = theme.dark): React.CSSProperties => ({

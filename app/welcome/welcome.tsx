@@ -89,7 +89,7 @@ export default function WaitlistPage() {
           >
             <div style={cornerStyle()} />
 
-            <div style={{ marginBottom: "2.5rem" }}>
+            <div style={{ marginBottom: "1rem" }}>
               <span
                 style={{
                   fontSize: 16,
@@ -121,10 +121,10 @@ export default function WaitlistPage() {
             <p
               className="hero-heading hero-heading--mobile"
               style={{
-                fontSize: 34,
+                fontSize: 30,
                 fontWeight: 600,
                 color: t.text,
-                margin: "0 0 .75rem",
+                margin: "0 0 2rem",
                 lineHeight: 1.15,
                 letterSpacing: -0.9,
               }}
@@ -147,9 +147,6 @@ export default function WaitlistPage() {
             </p>
 
             <div ref={waitlistRef}>
-              <div style={{ marginBottom: "1rem" }}>
-                <Pill t={t}>Limited beta · 500 seats</Pill>
-              </div>
 
               {submitted ? (
                 <Success t={t} />
@@ -415,8 +412,7 @@ export default function WaitlistPage() {
             onClick={scrollToWaitlist}
             style={{
               ...ctaButtonStyle(t),
-               background: "#ffffff",
-               display: "inline-flex",
+              display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               gap: 8,

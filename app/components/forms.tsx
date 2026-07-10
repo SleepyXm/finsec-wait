@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Label } from "./UI/UI";
+import { Label, WHITE } from "./UI/UI";
 
 // ─── Waitlist form ───────────────────────────────────────────────────────────
 
@@ -58,7 +58,7 @@ export function WaitlistForm({
         <input
           type="email"
           value={email}
-          placeholder="you@example.com"
+          placeholder="Enter your email..."
           onChange={(e) => {
             setEmail(e.target.value);
             setEmailErr(false);
@@ -83,7 +83,7 @@ export function WaitlistForm({
         disabled={loading}
         style={{
           width: "100%",
-          background: t.btn,
+          background: WHITE,
           color: t.btnText,
           border: "none",
           borderRadius: 8,
