@@ -9,6 +9,7 @@ import {
   pageStyle,
   panelStyle,
   sectionStyle,
+  ctaButtonStyle,
   theme,
 } from "~/components/UI/UI";
 import { Success } from "~/components/popup";
@@ -413,7 +414,7 @@ export default function WaitlistPage() {
             type="button"
             onClick={scrollToWaitlist}
             style={{
-              ...buttonStyle(t),
+              ...ctaButtonStyle(t),
                background: "#ffffff",
                display: "inline-flex",
               alignItems: "center",
