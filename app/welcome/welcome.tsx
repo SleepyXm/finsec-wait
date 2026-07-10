@@ -414,7 +414,8 @@ export default function WaitlistPage() {
             onClick={scrollToWaitlist}
             style={{
               ...buttonStyle(t),
-              display: "inline-flex",
+               background: "#ffffff",
+               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               gap: 8,
