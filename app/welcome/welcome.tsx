@@ -22,9 +22,12 @@ import { StrategyGenerator } from "~/components/sections/strategy";
 
 export default function WaitlistPage() {
   const t = theme.dark;
+
   const [submitted, setSubmitted] = useState(false);
   const [count, setCount] = useState<number | null>(null);
+
   const waitlistRef = useRef<HTMLDivElement>(null);
+  const howItWorksRef = useRef<HTMLDivElement>(null);
 
   const loadCount = async () => {
     try {
@@ -46,21 +49,18 @@ export default function WaitlistPage() {
   };
 
   const scrollToWaitlist = () => {
-    waitlistRef.current?.scrollIntoView({ behavior: "smooth" });
+    waitlistRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
   };
 
-  const howItWorksRef = useRef<HTMLDivElement>(null);
-
-const scrollToHowItWorks = () => {
-  howItWorksRef.current?.scrollIntoView({ behavior: "smooth" });
-};
-
-   const BarReplayRef = useRef<HTMLDivElement>(null);
-
-const scrollToBarReplay = () => {
-  BarReplayRef.current?.scrollIntoView({ behavior: "smooth" });
-};
-
+  const scrollToHowItWorks = () => {
+    howItWorksRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   return (
     <div className="entry-page" style={pageStyle}>
@@ -136,7 +136,7 @@ const scrollToBarReplay = () => {
               style={{
                 fontSize: 15,
                 color: t.muted,
-                margin: "0 0 2rem",
+                margin: "0 0 1.5rem",
                 lineHeight: 1.65,
               }}
             >
@@ -145,19 +145,30 @@ const scrollToBarReplay = () => {
               or learning to code.
             </p>
 
-            <button
-              onClick={scrollToHowItWorks}
-              style={{
-                ...buttonStyle(t),
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                marginBottom: "2.5rem",
-                marginLeft: "22.5%",
-              }}
-            >
-              Find out more below ↓
-            </button>
+            <div ref={waitlistRef}>
+              <div style={{ marginBottom: "1rem" }}>
+                <Pill t={t}>Limited beta · 500 seats</Pill>
+              </div>
+
+              {submitted ? (
+                <Success t={t} />
+              ) : (
+                <WaitlistForm t={t} onSubmit={handleSubmit} />
+              )}
+
+              <p
+                style={{
+                  fontSize: 12,
+                  color: t.muted,
+                  lineHeight: 1.6,
+                  margin: "0.85rem 0 0",
+                  textAlign: "center",
+                }}
+              >
+                Free during beta. No credit card. We&apos;ll reach out as seats
+                open.
+              </p>
+            </div>
 
             <Stats count={count} />
 
@@ -169,18 +180,39 @@ const scrollToBarReplay = () => {
                 marginTop: "1.25rem",
               }}
             >
-              {FEATURES.map((f) => (
-                <Pill key={f} t={t}>
-                  {f}
+              {FEATURES.map((feature) => (
+                <Pill key={feature} t={t}>
+                  {feature}
                 </Pill>
               ))}
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "2rem",
+              }}
+            >
+              <button
+                type="button"
+                onClick={scrollToHowItWorks}
+                style={{
+                  ...buttonStyle(t),
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                Find out more below ↓
+              </button>
             </div>
           </div>
         </section>
       </main>
 
       <div ref={howItWorksRef}>
-      <HowItWorks />
+        <HowItWorks />
       </div>
 
       <StrategyGenerator />
@@ -188,15 +220,17 @@ const scrollToBarReplay = () => {
 
       <section
         className="grid-glow-section"
-        onMouseMove={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          e.currentTarget.style.setProperty(
+        onMouseMove={(event) => {
+          const rect = event.currentTarget.getBoundingClientRect();
+
+          event.currentTarget.style.setProperty(
             "--grid-x",
-            `${e.clientX - rect.left}px`,
+            `${event.clientX - rect.left}px`,
           );
-          e.currentTarget.style.setProperty(
+
+          event.currentTarget.style.setProperty(
             "--grid-y",
-            `${e.clientY - rect.top}px`,
+            `${event.clientY - rect.top}px`,
           );
         }}
         style={{
@@ -245,7 +279,7 @@ const scrollToBarReplay = () => {
               margin: "0 0 1.25rem",
             }}
           >
-            FINSEC's end goal is simple: make institutional-grade trade
+            FINSEC&apos;s end goal is simple: make institutional-grade trade
             automation accessible to any retail trader with a strategy.
           </p>
 
@@ -257,9 +291,9 @@ const scrollToBarReplay = () => {
               margin: 0,
             }}
           >
-            A world where your edge isn't limited by your ability to code. Where
-            a well-researched strategy runs exactly as you intend it — at 3am,
-            across five tickers, without you touching a button.
+            A world where your edge isn&apos;t limited by your ability to code.
+            Where a well-researched strategy runs exactly as you intend it — at
+            3am, across five tickers, without you touching a button.
           </p>
 
           <div
@@ -296,7 +330,13 @@ const scrollToBarReplay = () => {
                   {value}
                 </div>
 
-                <div style={{ fontSize: 12, color: t.muted, marginTop: 5 }}>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: t.muted,
+                    marginTop: 5,
+                  }}
+                >
                   {label}
                 </div>
               </div>
@@ -306,17 +346,18 @@ const scrollToBarReplay = () => {
       </section>
 
       <section
-        ref={waitlistRef}
         className="grid-glow-section"
-        onMouseMove={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          e.currentTarget.style.setProperty(
+        onMouseMove={(event) => {
+          const rect = event.currentTarget.getBoundingClientRect();
+
+          event.currentTarget.style.setProperty(
             "--grid-x",
-            `${e.clientX - rect.left}px`,
+            `${event.clientX - rect.left}px`,
           );
-          e.currentTarget.style.setProperty(
+
+          event.currentTarget.style.setProperty(
             "--grid-y",
-            `${e.clientY - rect.top}px`,
+            `${event.clientY - rect.top}px`,
           );
         }}
         style={{
@@ -336,43 +377,51 @@ const scrollToBarReplay = () => {
             maxWidth: 500,
             margin: "0 auto",
             padding: "2rem",
+            textAlign: "center",
           }}
         >
           <div style={cornerStyle()} />
 
-          <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-            <Pill t={t}>Limited beta · 500 seats</Pill>
+          <Pill t={t}>Limited beta · 500 seats</Pill>
 
-            <h2
-              style={{
-                fontSize: 32,
-                fontWeight: 600,
-                color: t.text,
-                letterSpacing: -0.75,
-                margin: "1rem 0 0.75rem",
-                lineHeight: 1.2,
-              }}
-            >
-              Get early access.
-            </h2>
+          <h2
+            style={{
+              fontSize: 32,
+              fontWeight: 600,
+              color: t.text,
+              letterSpacing: -0.75,
+              margin: "1rem 0 0.75rem",
+              lineHeight: 1.2,
+            }}
+          >
+            Ready to automate your strategy?
+          </h2>
 
-            <p
-              style={{
-                fontSize: 15,
-                color: t.muted,
-                lineHeight: 1.65,
-                margin: 0,
-              }}
-            >
-              Free during beta. No credit card. We'll reach out as seats open.
-            </p>
-          </div>
+          <p
+            style={{
+              fontSize: 15,
+              color: t.muted,
+              lineHeight: 1.65,
+              margin: "0 0 1.75rem",
+            }}
+          >
+            Join the early-access waitlist and help shape FINSEC before the beta
+            opens.
+          </p>
 
-          {submitted ? (
-            <Success t={t} />
-          ) : (
-            <WaitlistForm t={t} onSubmit={handleSubmit} />
-          )}
+          <button
+            type="button"
+            onClick={scrollToWaitlist}
+            style={{
+              ...buttonStyle(t),
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+            }}
+          >
+            Join the waitlist ↑
+          </button>
 
           <div style={{ marginTop: "2rem" }}>
             <Stats count={count} />
@@ -420,11 +469,19 @@ function Stats({ count }: { count: number | null }) {
         ...panelStyle(t),
         padding: "1.25rem 0",
         textAlign: "center",
+        marginTop: "1.5rem",
       }}
     >
       <div>
         <AnimatedCount value={count ?? 0} t={t} />
-        <div style={{ fontSize: 11, color: t.muted, marginTop: 3 }}>
+
+        <div
+          style={{
+            fontSize: 11,
+            color: t.muted,
+            marginTop: 3,
+          }}
+        >
           On the waitlist
         </div>
       </div>
@@ -435,15 +492,45 @@ function Stats({ count }: { count: number | null }) {
           borderRight: `1px solid ${t.borderSoft}`,
         }}
       >
-        <div style={{ fontSize: 18, fontWeight: 600, color: t.text }}>500</div>
-        <div style={{ fontSize: 11, color: t.muted, marginTop: 3 }}>
+        <div
+          style={{
+            fontSize: 18,
+            fontWeight: 600,
+            color: t.text,
+          }}
+        >
+          500
+        </div>
+
+        <div
+          style={{
+            fontSize: 11,
+            color: t.muted,
+            marginTop: 3,
+          }}
+        >
           Beta seats
         </div>
       </div>
 
       <div>
-        <div style={{ fontSize: 18, fontWeight: 600, color: t.text }}>Free</div>
-        <div style={{ fontSize: 11, color: t.muted, marginTop: 3 }}>
+        <div
+          style={{
+            fontSize: 18,
+            fontWeight: 600,
+            color: t.text,
+          }}
+        >
+          Free
+        </div>
+
+        <div
+          style={{
+            fontSize: 11,
+            color: t.muted,
+            marginTop: 3,
+          }}
+        >
           During beta
         </div>
       </div>
